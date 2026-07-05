@@ -1,5 +1,7 @@
 export * from './jupiter'
 export * from './types'
 export * from './version'
+export { JupiterAuth } from '@jupiter-cloud/auth'
+export type { JupiterAuthOptions } from '@jupiter-cloud/auth'
 export { JupiterStorage } from '@jupiter-cloud/storage'
 export type { JupiterStorageOptions } from '@jupiter-cloud/storage'

@@ -5,8 +5,8 @@ JavaScript and TypeScript SDKs for Jupiter Cloud.
 ## Packages
 
 - `@jupiter-cloud/core`: shared runtime, HTTP, errors, and utility types.
+- `@jupiter-cloud/auth`: standalone Auth SDK.
 - `@jupiter-cloud/storage`: standalone Storage SDK.
-- auth
 - db-rest
 - `@jupiter-cloud/sdk`: aggregate SDK that composes product SDKs.
 
@@ -30,6 +30,10 @@ const jupiter = new Jupiter({
 })
 
 const { data, error } = await jupiter.storage.listBuckets()
+const { data: session } = await jupiter.auth.signInWithPassword({
+  email: 'user@example.com',
+  password: 'password1'
+})
 ```
 
 Use a standalone product package when you only need one service:

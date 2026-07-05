@@ -9,6 +9,7 @@ describe('Jupiter', () => {
       projectId: 'project-1'
     })
 
+    expect(client.auth).toBeDefined()
     expect(client.storage).toBeDefined()
   })
 
@@ -21,12 +22,16 @@ describe('Jupiter', () => {
     })
 
     await client.storage.listBuckets()
+    await client.auth.healthCheck()
     client.setBaseUrl('https://api-two.example.test/')
     await client.storage.listBuckets()
+    await client.auth.healthCheck()
 
     expect(requests.map((request) => request.url)).toEqual([
       'https://api-one.example.test/storage/buckets',
-      'https://api-two.example.test/storage/buckets'
+      'https://api-one.example.test/auth/health',
+      'https://api-two.example.test/storage/buckets',
+      'https://api-two.example.test/auth/health'
     ])
   })
 
@@ -39,11 +44,15 @@ describe('Jupiter', () => {
     })
 
     await client.storage.listBuckets()
+    await client.auth.healthCheck()
     client.setProjectId('project-2')
     await client.storage.listBuckets()
+    await client.auth.healthCheck()
 
     expect(requests.map((request) => request.headers.get(JUPITER_PROJECT_ID_HEADER))).toEqual([
       'project-1',
+      'project-1',
+      'project-2',
       'project-2'
     ])
   })

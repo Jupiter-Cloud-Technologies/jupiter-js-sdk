@@ -55,6 +55,80 @@ describe('HttpClient', () => {
     })
   })
 
+  it('normalizes auth API error responses', async () => {
+    const client = new HttpClient('https://api.example.test', {
+      fetch: () =>
+        Promise.resolve(
+          Response.json(
+            {
+              code: 'validation_failed',
+              message: 'Email is required.',
+              weak_password: {
+                reasons: ['length']
+              }
+            },
+            {
+              headers: {
+                'content-type': 'application/json',
+                'x-request-id': 'req_auth'
+              },
+              status: 422,
+              statusText: 'Unprocessable Entity'
+            }
+          )
+        )
+    })
+
+    const result = await client.request('/signup')
+
+    expect(result.data).toBeNull()
+    expect(result.error).toMatchObject({
+      code: 'validation_failed',
+      detail: 'Email is required.',
+      requestId: 'req_auth',
+      status: 422,
+      title: 'Unprocessable Entity',
+      type: 'about:blank',
+      weak_password: {
+        reasons: ['length']
+      }
+    })
+  })
+
+  it('normalizes OAuth-style error responses', async () => {
+    const client = new HttpClient('https://api.example.test', {
+      fetch: () =>
+        Promise.resolve(
+          Response.json(
+            {
+              error: 'invalid_grant',
+              error_description: 'Refresh token is invalid.'
+            },
+            {
+              headers: {
+                'content-type': 'application/json'
+              },
+              status: 400,
+              statusText: 'Bad Request'
+            }
+          )
+        )
+    })
+
+    const result = await client.request('/token')
+
+    expect(result.data).toBeNull()
+    expect(result.error).toMatchObject({
+      code: 'invalid_grant',
+      detail: 'Refresh token is invalid.',
+      error: 'invalid_grant',
+      error_description: 'Refresh token is invalid.',
+      status: 400,
+      title: 'Bad Request',
+      type: 'about:blank'
+    })
+  })
+
   it('returns network failures as typed error results', async () => {
     const client = new HttpClient('https://api.example.test', {
       fetch: () => Promise.reject(new TypeError('fetch failed'))

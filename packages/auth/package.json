@@ -1,12 +1,12 @@
 {
-  "name": "@jupiter-cloud/sdk",
+  "name": "@jupiter-cloud/auth",
   "version": "0.3.0",
-  "description": "Aggregate JavaScript and TypeScript client for Jupiter Cloud.",
+  "description": "JavaScript and TypeScript client for Jupiter Auth.",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/Jupiter-Cloud-Technologies/jupiter-js-sdk",
-    "directory": "packages/sdk"
+    "directory": "packages/auth"
   },
   "bugs": {
     "url": "https://github.com/Jupiter-Cloud-Technologies/jupiter-js-sdk/issues"
@@ -46,13 +46,11 @@
     "test:types": "tsd",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "@jupiter-cloud/auth": "workspace:*",
-    "@jupiter-cloud/core": "workspace:*",
-    "@jupiter-cloud/storage": "workspace:*"
-  },
   "devDependencies": {
     "tsd": "^0.31.2"
+  },
+  "dependencies": {
+    "@jupiter-cloud/core": "workspace:*"
   },
   "engines": {
     "node": ">=20"

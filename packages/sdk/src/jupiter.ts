@@ -1,9 +1,12 @@
+import { JupiterAuth } from '@jupiter-cloud/auth'
 import { JupiterStorage } from '@jupiter-cloud/storage'
 import type { JupiterOptions } from './types'
 
+const defaultAuthPath = '/auth'
 const defaultStoragePath = '/storage'
 
 export class Jupiter {
+  auth: JupiterAuth
   storage: JupiterStorage
 
   private baseUrl: string
@@ -12,6 +15,7 @@ export class Jupiter {
   constructor(options: JupiterOptions) {
     this.baseUrl = normalizeBaseUrl(options.baseUrl)
     this.options = { ...options }
+    this.auth = this.createAuth()
     this.storage = this.createStorage()
   }
 
@@ -23,7 +27,9 @@ export class Jupiter {
   setBaseUrl(baseUrl: string): this {
     this.baseUrl = normalizeBaseUrl(baseUrl)
     this.options.baseUrl = this.baseUrl
+    this.options.authUrl = undefined
     this.options.storageUrl = undefined
+    this.auth = this.createAuth()
     this.storage = this.createStorage()
     return this
   }
@@ -36,8 +42,23 @@ export class Jupiter {
    */
   setProjectId(projectId: string): this {
     this.options.projectId = projectId
+    this.auth = this.createAuth()
     this.storage = this.createStorage()
     return this
+  }
+
+  private createAuth(): JupiterAuth {
+    const authUrl = this.options.authUrl ?? `${this.baseUrl}${defaultAuthPath}`
+
+    return new JupiterAuth(authUrl, {
+      claims: this.options.claims,
+      fetch: this.options.fetch,
+      headers: this.options.headers,
+      projectId: this.options.projectId,
+      retryAttempts: this.options.retryAttempts,
+      timeoutMs: this.options.timeoutMs,
+      token: this.options.token
+    })
   }
 
   private createStorage(): JupiterStorage {
