@@ -17,8 +17,8 @@ export type JupiterClientErrorCode =
   | 'jupiter.network_error'
   | 'jupiter.timeout_error'
 
-export type JupiterErrorPayload<TCode extends string = string> = {
-  code: TCode
+export type JupiterErrorPayload = {
+  code: string
   detail: string
   requestId?: string | undefined
   status: number
@@ -26,7 +26,9 @@ export type JupiterErrorPayload<TCode extends string = string> = {
   type: string
 }
 
-export type JupiterClientErrorPayload = JupiterErrorPayload<JupiterClientErrorCode>
+export type JupiterClientErrorPayload = JupiterErrorPayload & {
+  code: JupiterClientErrorCode
+}
 
 export type JupiterResult<TData, TError extends JupiterErrorPayload = JupiterErrorPayload> =
   | {

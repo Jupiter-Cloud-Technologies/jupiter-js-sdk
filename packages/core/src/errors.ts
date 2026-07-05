@@ -8,7 +8,7 @@ export class JupiterError<TCode extends string = string> extends Error {
   readonly title: string
   readonly type: string
 
-  constructor(payload: JupiterErrorPayload<TCode>) {
+  constructor(payload: JupiterErrorPayload & { code: TCode }) {
     super(payload.detail)
     this.name = 'JupiterError'
     this.code = payload.code

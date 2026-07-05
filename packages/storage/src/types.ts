@@ -113,12 +113,36 @@ export type StorageErrorCode = (typeof STORAGE_ERROR_CODES)[number]
  *
  * The API serializes errors as RFC 9457 `application/problem+json`.
  */
-export type ProblemDetails = JupiterErrorPayload<StorageErrorCode>
+export type ProblemDetails = JupiterErrorPayload & {
+  code: StorageErrorCode
+}
 
 /**
- * Storage API error payload returned in failed `StorageResult` values.
+ * Client-side Jupiter SDK error code that can be returned before the Storage
+ * API produces a service error response.
  */
-export type StorageError = ProblemDetails
+export type StorageClientErrorCode =
+  | 'jupiter.abort_error'
+  | 'jupiter.http_error'
+  | 'jupiter.invalid_response'
+  | 'jupiter.network_error'
+  | 'jupiter.timeout_error'
+
+/**
+ * Client-side Jupiter SDK error payload returned in failed `StorageResult` values.
+ */
+export type StorageClientError = JupiterErrorPayload & {
+  code: StorageClientErrorCode
+}
+
+/**
+ * Error payload returned in failed `StorageResult` values.
+ *
+ * Storage methods can fail with a typed Storage API problem response or a
+ * client-side Jupiter error such as a network, timeout, abort, or invalid
+ * response error.
+ */
+export type StorageError = ProblemDetails | StorageClientError
 
 /**
  * Bucket record returned by the Storage API.
