@@ -1,5 +1,6 @@
 import {
   HttpClient,
+  JUPITER_PROJECT_ID_HEADER,
   createHeaders,
   type HttpClientOptions,
   type RequestOptions
@@ -66,7 +67,7 @@ export class StorageClient {
 
     const headers = createHeaders(options.headers, {
       Authorization: options.token ? `Bearer ${options.token}` : undefined,
-      'X-Jupiter-Project-Id': options.projectId
+      [JUPITER_PROJECT_ID_HEADER]: options.projectId
     })
 
     const httpOptions: HttpClientOptions = {

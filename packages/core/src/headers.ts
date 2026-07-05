@@ -1,5 +1,7 @@
 import type { HeadersInitLike } from './types'
 
+export const JUPITER_PROJECT_ID_HEADER = 'X-Jupiter-Project-Id'
+
 export function createHeaders(base?: HeadersInit, extra?: HeadersInitLike): Headers {
   const headers = new Headers(base)
 

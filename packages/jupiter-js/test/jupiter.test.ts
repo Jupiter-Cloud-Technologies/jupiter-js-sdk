@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { JUPITER_PROJECT_ID_HEADER } from '@jupiter-cloud/core'
 import { Jupiter } from '../src/Jupiter'
 
 describe('Jupiter', () => {
@@ -38,7 +39,7 @@ describe('Jupiter', () => {
     client.setProjectId('project-2')
     await client.storage.listBuckets()
 
-    expect(requests.map((request) => request.headers.get('X-Jupiter-Project-Id'))).toEqual([
+    expect(requests.map((request) => request.headers.get(JUPITER_PROJECT_ID_HEADER))).toEqual([
       'project-1',
       'project-2'
     ])
