@@ -1,7 +1,9 @@
-import type { Fetch } from '@jupiter-cloud/core'
+import type { Fetch, JsonObject } from '@jupiter-cloud/core'
 
 export type JupiterOptions = {
+  authUrl?: string | undefined
   baseUrl: string
+  claims?: JsonObject | string | undefined
   fetch?: Fetch | undefined
   headers?: HeadersInit | undefined
   projectId: string

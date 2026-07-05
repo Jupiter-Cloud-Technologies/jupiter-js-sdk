@@ -216,13 +216,19 @@ function createProblemDetails<TError extends JupiterErrorPayload>(
   requestId: string | undefined
 ): TError {
   return {
-    code: payload.code,
-    detail: stringOr(payload.detail, response.statusText),
+    code: stringOr(payload.code, stringOr(payload.error, 'jupiter.http_error')),
+    detail: stringOr(
+      payload.detail,
+      stringOr(payload.message, stringOr(payload.error_description, response.statusText))
+    ),
+    error: payload.error,
+    error_description: payload.error_description,
     requestId: stringOrUndefined(payload.requestId) ?? requestId,
     status: numberOr(payload.status, response.status),
     title: stringOr(payload.title, response.statusText),
-    type: stringOr(payload.type, 'about:blank')
-  } as TError
+    type: stringOr(payload.type, 'about:blank'),
+    weak_password: payload.weak_password
+  } as unknown as TError
 }
 
 function createHttpErrorPayload(
@@ -296,7 +302,12 @@ function createSyntheticErrorResponse(payload: JupiterClientErrorPayload): Respo
 }
 
 function isProblemDetailsLike(value: unknown): value is Record<string, unknown> {
-  return isRecord(value) && typeof value.code === 'string'
+  return (
+    isRecord(value) &&
+    (typeof value.code === 'string' ||
+      (typeof value.error === 'string' && typeof value.error_description === 'string') ||
+      typeof value.error === 'string')
+  )
 }
 
 function isJsonContentType(contentType: string): boolean {

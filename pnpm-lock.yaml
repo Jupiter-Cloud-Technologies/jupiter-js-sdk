@@ -67,10 +67,23 @@ importers:
         specifier: ^4.19.2
         version: 4.23.0
 
+  packages/auth:
+    dependencies:
+      '@jupiter-cloud/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      tsd:
+        specifier: ^0.31.2
+        version: 0.31.2
+
   packages/core: {}
 
   packages/sdk:
     dependencies:
+      '@jupiter-cloud/auth':
+        specifier: workspace:*
+        version: link:../auth
       '@jupiter-cloud/core':
         specifier: workspace:*
         version: link:../core
