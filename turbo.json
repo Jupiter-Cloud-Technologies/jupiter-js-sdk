@@ -11,9 +11,7 @@
     "clean": {
       "cache": false
     },
-    "lint": {
-      "dependsOn": ["^build"]
-    },
+    "lint": {},
     "test": {
       "dependsOn": ["build"],
       "outputs": ["coverage/**"]

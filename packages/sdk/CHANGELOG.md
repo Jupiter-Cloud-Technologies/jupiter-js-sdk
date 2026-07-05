@@ -1,4 +1,4 @@
-# @jupiter-cloud/jupiter-js
+# @jupiter-cloud/sdk
 
 ## 0.4.0
 
