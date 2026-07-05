@@ -1,5 +1,12 @@
 # @jupiter-cloud/storage
 
+## 0.4.0
+
+### Patch Changes
+
+- Updated dependencies [3c55fdc]
+  - @jupiter-cloud/core@0.4.0
+
 ## 0.2.0
 
 ### Minor Changes
