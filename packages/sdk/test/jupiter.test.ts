@@ -4,7 +4,8 @@ import { Jupiter } from '../src'
 
 describe('Jupiter', () => {
   it('creates a storage client', () => {
-    const client = new Jupiter('https://api.example.test', {
+    const client = new Jupiter({
+      baseUrl: 'https://api.example.test',
       projectId: 'project-1'
     })
 
@@ -13,7 +14,8 @@ describe('Jupiter', () => {
 
   it('updates service clients when base URL changes', async () => {
     const requests: CapturedRequest[] = []
-    const client = new Jupiter('https://api-one.example.test/', {
+    const client = new Jupiter({
+      baseUrl: 'https://api-one.example.test/',
       fetch: createFetch(requests),
       projectId: 'project-1'
     })
@@ -30,7 +32,8 @@ describe('Jupiter', () => {
 
   it('updates service clients when project ID changes', async () => {
     const requests: CapturedRequest[] = []
-    const client = new Jupiter('https://api.example.test', {
+    const client = new Jupiter({
+      baseUrl: 'https://api.example.test',
       fetch: createFetch(requests),
       projectId: 'project-1'
     })
@@ -46,7 +49,8 @@ describe('Jupiter', () => {
   })
 
   it('returns itself from setters for chaining', () => {
-    const client = new Jupiter('https://api.example.test', {
+    const client = new Jupiter({
+      baseUrl: 'https://api.example.test',
       projectId: 'project-1'
     })
 

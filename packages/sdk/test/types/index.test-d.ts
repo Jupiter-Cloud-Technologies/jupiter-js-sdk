@@ -1,7 +1,8 @@
 import { expectAssignable, expectType } from 'tsd'
 import { Jupiter } from '../..'
 
-const client = new Jupiter('https://api.example.test', {
+const client = new Jupiter({
+  baseUrl: 'https://api.example.test',
   projectId: 'project-1'
 })
 

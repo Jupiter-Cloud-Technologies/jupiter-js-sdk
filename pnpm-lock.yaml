@@ -69,7 +69,7 @@ importers:
 
   packages/core: {}
 
-  packages/jupiter-js:
+  packages/sdk:
     dependencies:
       '@jupiter-cloud/core':
         specifier: workspace:*
