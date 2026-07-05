@@ -21,7 +21,7 @@ pnpm add @jupiter-cloud/jupiter-js
 ```ts
 import { Jupiter } from '@jupiter-cloud/jupiter-js'
 
-const jupiter = Jupiter('https://api.jupiter.example', {
+const jupiter = new Jupiter('https://api.jupiter.example', {
   projectId: 'project-id',
   token: 'public-or-user-token'
 })
@@ -32,9 +32,9 @@ const { data, error } = await jupiter.storage.from('avatars').list()
 Use a standalone product package when you only need one service:
 
 ```ts
-import { StorageClient } from '@jupiter-cloud/storage'
+import { JupiterStorage } from '@jupiter-cloud/storage'
 
-const storage = new StorageClient('https://storage.jupiter.example', {
+const storage = new JupiterStorage('https://storage.jupiter.example', {
   projectId: 'project-id',
   token: 'service-or-user-token'
 })

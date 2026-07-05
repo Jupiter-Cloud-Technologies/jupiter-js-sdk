@@ -196,9 +196,9 @@ export type Bucket = {
 export type StorageBucketInfo = Bucket
 
 /**
- * Options used to construct a standalone Storage client.
+ * Options used to construct a standalone Jupiter Storage client.
  */
-export type StorageClientOptions = {
+export type JupiterStorageOptions = {
   /** Custom fetch implementation for non-standard runtimes or instrumentation. */
   fetch?: Fetch | undefined
 

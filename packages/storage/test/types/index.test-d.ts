@@ -1,7 +1,7 @@
 import { expectError } from 'tsd'
-import { StorageClient } from '../..'
+import { JupiterStorage } from '../..'
 
-const storage = new StorageClient('https://storage.example.test', {
+const storage = new JupiterStorage('https://storage.example.test', {
   projectId: 'project-1'
 })
 

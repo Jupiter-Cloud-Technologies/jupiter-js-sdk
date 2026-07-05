@@ -1,6 +1,6 @@
 import type { Fetch } from '@jupiter-cloud/core'
 
-export type JupiterClientOptions = {
+export type JupiterOptions = {
   fetch?: Fetch | undefined
   headers?: HeadersInit | undefined
   projectId: string

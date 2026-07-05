@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { StorageClient } from '../src'
+import { JupiterStorage } from '../src'
 
-describe('StorageClient', () => {
+describe('JupiterStorage', () => {
   it('creates a bucket with camelCase SDK options mapped to API fields', async () => {
     const requests: CapturedRequest[] = []
-    const storage = createStorageClient(requests, {
+    const storage = createStorage(requests, {
       buckets: [],
       count: 0
     })
@@ -34,7 +34,7 @@ describe('StorageClient', () => {
 
   it('edits a bucket by name', async () => {
     const requests: CapturedRequest[] = []
-    const storage = createStorageClient(requests, {
+    const storage = createStorage(requests, {
       name: 'avatars'
     })
 
@@ -56,7 +56,7 @@ describe('StorageClient', () => {
     const metadata = {
       owner: 'user-1'
     }
-    const storage = createStorageClient(requests, {
+    const storage = createStorage(requests, {
       object: {},
       uploaded: true
     })
@@ -76,7 +76,7 @@ describe('StorageClient', () => {
 
   it('infers content length for typed arrays', async () => {
     const requests: CapturedRequest[] = []
-    const storage = createStorageClient(requests, {
+    const storage = createStorage(requests, {
       object: {},
       uploaded: true
     })
@@ -90,7 +90,7 @@ describe('StorageClient', () => {
 
   it('infers content length for URLSearchParams', async () => {
     const requests: CapturedRequest[] = []
-    const storage = createStorageClient(requests, {
+    const storage = createStorage(requests, {
       object: {},
       uploaded: true
     })
@@ -102,7 +102,7 @@ describe('StorageClient', () => {
 
   it('rejects FormData uploads at runtime', () => {
     const requests: CapturedRequest[] = []
-    const storage = createStorageClient(requests, {
+    const storage = createStorage(requests, {
       object: {},
       uploaded: true
     })
@@ -114,7 +114,7 @@ describe('StorageClient', () => {
 
   it('requires content length for streams', () => {
     const requests: CapturedRequest[] = []
-    const storage = createStorageClient(requests, {
+    const storage = createStorage(requests, {
       object: {},
       uploaded: true
     })
@@ -129,7 +129,7 @@ describe('StorageClient', () => {
     const metadata = {
       owner: 'user-1'
     }
-    const storage = createStorageClient(requests, {
+    const storage = createStorage(requests, {
       destinationBucketName: 'backup',
       destinationKey: 'users/1.png',
       etag: 'etag',
@@ -162,7 +162,7 @@ describe('StorageClient', () => {
     const metadata = {
       owner: 'user-1'
     }
-    const storage = createStorageClient(
+    const storage = createStorage(
       requests,
       new Blob(['content'], {
         type: 'image/png'
@@ -198,7 +198,7 @@ describe('StorageClient', () => {
 
   it('starts multipart uploads with key query and metadata headers', async () => {
     const requests: CapturedRequest[] = []
-    const storage = createStorageClient(requests, {
+    const storage = createStorage(requests, {
       bucket: 'videos',
       key: 'raw/a.mov',
       upload_id: 'upload-1'
@@ -224,7 +224,7 @@ describe('StorageClient', () => {
 
   it('completes multipart uploads with selected part numbers', async () => {
     const requests: CapturedRequest[] = []
-    const storage = createStorageClient(requests, {
+    const storage = createStorage(requests, {
       object_data: {},
       uploaded: true
     })
@@ -251,7 +251,7 @@ describe('StorageClient', () => {
 
   it('rejects FormData multipart part uploads at runtime', () => {
     const requests: CapturedRequest[] = []
-    const storage = createStorageClient(requests, {
+    const storage = createStorage(requests, {
       etag: 'etag-1',
       part_number: 1,
       part_size: 1
@@ -271,12 +271,12 @@ type CapturedRequest = {
   url: string
 }
 
-function createStorageClient(
+function createStorage(
   requests: CapturedRequest[],
   responseBody: BodyInit | object,
   responseHeaders?: HeadersInit
-): StorageClient {
-  return new StorageClient('https://storage.example.test', {
+): JupiterStorage {
+  return new JupiterStorage('https://storage.example.test', {
     fetch: (input, init = {}) => {
       requests.push({
         init,

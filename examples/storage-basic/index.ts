@@ -1,4 +1,4 @@
-import { StorageClient } from '@jupiter-cloud/storage'
+import { JupiterStorage } from '@jupiter-cloud/storage'
 
 const endpoint = process.env.JUPITER_STORAGE_URL ?? 'http://localhost:8787'
 const projectId = process.env.JUPITER_PROJECT_ID
@@ -8,7 +8,7 @@ if (!projectId) {
   throw new Error('JUPITER_PROJECT_ID is required')
 }
 
-const storage = new StorageClient(endpoint, {
+const storage = new JupiterStorage(endpoint, {
   projectId,
   token
 })

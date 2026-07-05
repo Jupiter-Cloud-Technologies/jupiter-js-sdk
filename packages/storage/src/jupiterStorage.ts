@@ -38,7 +38,7 @@ import type {
   ObjectKey,
   PartNumber,
   StartMultipartUploadOptions,
-  StorageClientOptions,
+  JupiterStorageOptions,
   StorageResult,
   UpdateBucketOptions,
   UpdateBucketRequest,
@@ -58,11 +58,11 @@ import type {
  * `jupiter.storage.createBucket(...)`, `jupiter.storage.uploadObject(...)`, and similar
  * methods instead of first creating a bucket-scoped sub-client.
  */
-export class StorageClient {
+export class JupiterStorage {
   readonly http: HttpClient
   readonly projectId: string
 
-  constructor(url: string, options: StorageClientOptions) {
+  constructor(url: string, options: JupiterStorageOptions) {
     this.projectId = options.projectId
 
     const headers = createHeaders(options.headers, {

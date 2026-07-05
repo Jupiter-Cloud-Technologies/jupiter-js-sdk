@@ -1,11 +1,11 @@
 import { expectAssignable, expectType } from 'tsd'
-import { Jupiter, JupiterClient } from '../..'
+import { Jupiter } from '../..'
 
-const client = Jupiter('https://api.example.test', {
+const client = new Jupiter('https://api.example.test', {
   projectId: 'project-1'
 })
 
-expectType<JupiterClient>(client)
+expectType<Jupiter>(client)
 expectAssignable<Promise<unknown>>(
   client.storage.createBucket({
     location: 'weur',

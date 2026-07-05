@@ -1,18 +1,18 @@
-import { StorageClient } from '@jupiter-cloud/storage'
-import type { JupiterClientOptions } from './types'
+import { JupiterStorage } from '@jupiter-cloud/storage'
+import type { JupiterOptions } from './types'
 
 const defaultStoragePath = '/storage'
 
-export class JupiterClient {
-  storage: StorageClient
+export class Jupiter {
+  storage: JupiterStorage
 
   private baseUrl: string
-  private options: JupiterClientOptions
+  private options: JupiterOptions
 
-  constructor(baseUrl: string, options: JupiterClientOptions) {
+  constructor(baseUrl: string, options: JupiterOptions) {
     this.baseUrl = normalizeBaseUrl(baseUrl)
     this.options = { ...options }
-    this.storage = this.createStorageClient()
+    this.storage = this.createStorage()
   }
 
   /**
@@ -23,7 +23,7 @@ export class JupiterClient {
   setBaseUrl(baseUrl: string): this {
     this.baseUrl = normalizeBaseUrl(baseUrl)
     this.options.storageUrl = undefined
-    this.storage = this.createStorageClient()
+    this.storage = this.createStorage()
     return this
   }
 
@@ -35,14 +35,14 @@ export class JupiterClient {
    */
   setProjectId(projectId: string): this {
     this.options.projectId = projectId
-    this.storage = this.createStorageClient()
+    this.storage = this.createStorage()
     return this
   }
 
-  private createStorageClient(): StorageClient {
+  private createStorage(): JupiterStorage {
     const storageUrl = this.options.storageUrl ?? `${this.baseUrl}${defaultStoragePath}`
 
-    return new StorageClient(storageUrl, {
+    return new JupiterStorage(storageUrl, {
       fetch: this.options.fetch,
       headers: this.options.headers,
       projectId: this.options.projectId,
