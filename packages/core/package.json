@@ -3,6 +3,15 @@
   "version": "0.1.0",
   "description": "Shared runtime primitives for Jupiter JavaScript SDKs.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jupiter-Cloud-Technologies/jupiter-js-sdk",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/Jupiter-Cloud-Technologies/jupiter-js-sdk/issues"
+  },
+  "homepage": "https://github.com/Jupiter-Cloud-Technologies/jupiter-js-sdk#readme",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",

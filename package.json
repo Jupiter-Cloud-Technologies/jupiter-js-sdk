@@ -5,6 +5,14 @@
   "type": "module",
   "description": "JavaScript and TypeScript SDKs for Jupiter Cloud.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jupiter-Cloud-Technologies/jupiter-js-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/Jupiter-Cloud-Technologies/jupiter-js-sdk/issues"
+  },
+  "homepage": "https://github.com/Jupiter-Cloud-Technologies/jupiter-js-sdk#readme",
   "packageManager": "pnpm@9.15.4",
   "engines": {
     "node": ">=20"
