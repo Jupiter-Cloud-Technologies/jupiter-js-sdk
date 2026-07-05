@@ -1,6 +1,7 @@
 import type { Fetch } from '@jupiter-cloud/core'
 
 export type JupiterOptions = {
+  baseUrl: string
   fetch?: Fetch | undefined
   headers?: HeadersInit | undefined
   projectId: string
