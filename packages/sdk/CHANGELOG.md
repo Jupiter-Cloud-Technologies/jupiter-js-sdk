@@ -1,5 +1,11 @@
 # @jupiter-cloud/jupiter-js
 
+## 0.3.0
+
+### Minor Changes
+
+- 54c4736: Rename the aggregate SDK package to @jupiter-cloud/sdk.
+
 ## 0.2.0
 
 ### Minor Changes
