@@ -1,0 +1,14 @@
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  resolve: {
+    alias: {
+      '@jupiter-cloud/core': new URL('../core/src/index.ts', import.meta.url).pathname,
+      '@jupiter-cloud/storage': new URL('../storage/src/index.ts', import.meta.url).pathname
+    }
+  },
+  test: {
+    environment: 'node',
+    include: ['test/**/*.test.ts']
+  }
+})

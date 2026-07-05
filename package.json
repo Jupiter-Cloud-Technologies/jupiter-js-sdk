@@ -1,0 +1,54 @@
+{
+  "name": "jupiter-js",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "JavaScript and TypeScript SDKs for Jupiter Cloud.",
+  "license": "MIT",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=20"
+  },
+  "pnpm": {
+    "overrides": {
+      "fflate": "0.8.2"
+    }
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "changeset": "changeset",
+    "check:versions": "node scripts/sync-versions.mjs --check",
+    "check:exports": "turbo run check:exports",
+    "clean": "turbo run clean",
+    "docs": "typedoc",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "turbo run lint",
+    "lint:staged": "lint-staged",
+    "prepare": "husky",
+    "release": "pnpm check:versions && changeset publish",
+    "smoke:packages": "node scripts/smoke-packages.mjs",
+    "sync:versions": "node scripts/sync-versions.mjs",
+    "test": "turbo run test",
+    "test:types": "turbo run test:types",
+    "typecheck": "turbo run typecheck",
+    "version-packages": "changeset version && pnpm sync:versions"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.17.4",
+    "@changesets/cli": "^2.27.12",
+    "@eslint/js": "^9.18.0",
+    "eslint": "^9.18.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.1",
+    "prettier": "^3.4.2",
+    "publint": "^0.3.5",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "turbo": "^2.3.3",
+    "typedoc": "^0.28.19",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0",
+    "vitest": "^2.1.8"
+  }
+}
