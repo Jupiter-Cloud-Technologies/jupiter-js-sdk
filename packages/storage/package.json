@@ -1,6 +1,6 @@
 {
   "name": "@jupiter-cloud/storage",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "JavaScript and TypeScript client for Jupiter Storage.",
   "license": "MIT",
   "repository": {
