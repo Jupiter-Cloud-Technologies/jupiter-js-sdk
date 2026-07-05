@@ -8,25 +8,28 @@ JavaScript and TypeScript SDKs for Jupiter Cloud.
 - `@jupiter-cloud/storage`: standalone Storage SDK.
 - auth
 - db-rest
-- `@jupiter-cloud/jupiter-js`: aggregate SDK that composes product SDKs.
+- `@jupiter-cloud/sdk`: aggregate SDK that composes product SDKs.
 
 ## Install
 
 ```sh
-pnpm add @jupiter-cloud/jupiter-js
+pnpm add @jupiter-cloud/sdk
 ```
 
 ## Usage
 
 ```ts
-import { Jupiter } from '@jupiter-cloud/jupiter-js'
+import { Jupiter } from '@jupiter-cloud/sdk'
 
-const jupiter = new Jupiter('https://api.jupiter.example', {
+const jupiter = new Jupiter({
+  baseUrl: 'https://api.jupiter.example',
   projectId: 'project-id',
-  token: 'public-or-user-token'
+  token: 'public-or-user-token',
+  timeoutMs: 10_000,
+  fetch
 })
 
-const { data, error } = await jupiter.storage.from('avatars').list()
+const { data, error } = await jupiter.storage.listBuckets()
 ```
 
 Use a standalone product package when you only need one service:

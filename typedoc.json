@@ -3,7 +3,7 @@
   "entryPoints": [
     "packages/core/src/index.ts",
     "packages/storage/src/index.ts",
-    "packages/jupiter-js/src/index.ts"
+    "packages/sdk/src/index.ts"
   ],
   "entryPointStrategy": "resolve",
   "out": "docs/api"

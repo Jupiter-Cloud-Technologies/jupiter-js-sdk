@@ -9,8 +9,8 @@ export class Jupiter {
   private baseUrl: string
   private options: JupiterOptions
 
-  constructor(baseUrl: string, options: JupiterOptions) {
-    this.baseUrl = normalizeBaseUrl(baseUrl)
+  constructor(options: JupiterOptions) {
+    this.baseUrl = normalizeBaseUrl(options.baseUrl)
     this.options = { ...options }
     this.storage = this.createStorage()
   }
@@ -22,6 +22,7 @@ export class Jupiter {
    */
   setBaseUrl(baseUrl: string): this {
     this.baseUrl = normalizeBaseUrl(baseUrl)
+    this.options.baseUrl = this.baseUrl
     this.options.storageUrl = undefined
     this.storage = this.createStorage()
     return this

@@ -16,7 +16,7 @@ Product areas live in their own packages under `packages/*`.
 
 - `packages/core`: shared runtime, HTTP, errors, and utility types.
 - `packages/storage`: standalone storage client.
-- `packages/jupiter-js`: aggregate client that composes service packages.
+- `packages/sdk`: aggregate client that composes service packages.
 
 Do not place product implementations inside the aggregate package. The aggregate package should compose public clients.
 
