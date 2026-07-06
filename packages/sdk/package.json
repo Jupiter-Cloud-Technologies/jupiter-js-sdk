@@ -52,7 +52,7 @@
     "@jupiter-cloud/storage": "workspace:*"
   },
   "devDependencies": {
-    "tsd": "^0.31.2"
+    "tsd": "^0.33.0"
   },
   "engines": {
     "node": ">=20"
