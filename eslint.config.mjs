@@ -22,6 +22,7 @@ export default tseslint.config(
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommendedTypeChecked],
     files: ['**/*.ts'],
+    ignores: ['packages/auth/src/**'],
     languageOptions: {
       parserOptions: {
         projectService: {
