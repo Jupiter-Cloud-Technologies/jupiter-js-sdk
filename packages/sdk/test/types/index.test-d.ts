@@ -8,7 +8,7 @@ const client = new Jupiter({
 
 expectType<Jupiter>(client)
 expectAssignable<Promise<unknown>>(
-  client.auth.signInWithPassword({ email: 'a@b.com', password: 'p' })
+  client.auth.signInWithEmailAndPassword({ email: 'a@b.com', password: 'p' })
 )
 expectAssignable<Promise<unknown>>(
   client.storage.createBucket({
