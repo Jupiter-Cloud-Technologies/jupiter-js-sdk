@@ -1,10 +1,8 @@
-import type { Fetch, JsonObject } from '@jupiter-cloud/core'
-import type { CodeChallengeMethod, OAuthProvider, OAuthScopes, ProjectId } from './primitives'
 import type { SupportedStorage } from './storage'
+import type { Fetch } from '@jupiter-cloud/core'
 import type { AuthFlowType } from './authFlow'
-import type { LockFunc } from './mfa'
 
-export type JupiterAuthOptionsv2 = {
+export type AuthClientOptions = {
   /* The URL of the GoTrue server. */
   url?: string
   /* Any additional headers to send to the GoTrue server. */
@@ -53,20 +51,6 @@ export type JupiterAuthOptionsv2 = {
   /* If debug messages are emitted. Can be used to inspect the behavior of the library. If set to a function, the provided function will be used instead of `console.log()` to perform the logging. */
   debug?: boolean | ((message: string, ...args: any[]) => void)
   /**
-   * Provide your own locking mechanism based on the environment. By default
-   * the client coordinates refreshes itself (single-flight via
-   * `refreshingDeferred` + commit guard) and relies on the GoTrue server to
-   * resolve cross-tab refresh races. Passing a custom lock opts into a
-   * legacy path that wraps every auth operation in your supplied lock — this
-   * path is preserved for backwards compatibility (typically React Native
-   * `processLock` or Node multi-process setups).
-   *
-   * @deprecated Custom locks still work in v2.x for backwards compatibility.
-   * The legacy lock path will be removed in v3 — drop this option from your
-   * constructor options before upgrading.
-   */
-  lock?: LockFunc
-  /**
    * Set to "true" if there is a custom authorization header set globally.
    * @experimental
    */
@@ -88,8 +72,6 @@ export type JupiterAuthOptionsv2 = {
    */
   lockAcquireTimeout?: number
 
-  projectId: string
-
   /**
    * If true, skips automatic initialization in constructor. Useful for SSR
    * contexts where initialization timing must be controlled to prevent race
@@ -98,56 +80,25 @@ export type JupiterAuthOptionsv2 = {
    * @default false
    */
   skipAutoInitialize?: boolean
+
+  /**
+   * Opt-in flags for experimental features. These APIs may change without
+   * notice and are disabled by default.
+   *
+   * @experimental
+   */
+  experimental?: ExperimentalFeatureFlags
 }
 
-/** Common per-request options accepted by Auth methods. */
-export type AuthRequestOptions = {
-  /** Request abort signal. */
-  signal?: AbortSignal | undefined
-}
-
-/** Per-request options for endpoints that support redirect targets. */
-export type RedirectRequestOptions = AuthRequestOptions & {
-  /** Optional redirect target sent as the `redirect_to` header. */
-  redirectTo?: string | undefined
-}
-
-/** Per-request options for authenticated user endpoints. */
-export type AuthenticatedRequestOptions = AuthRequestOptions & {
-  /** Access token claims encoded into `X-Jupiter-Claims`. Overrides constructor claims. */
-  claims?: JsonObject | string | undefined
-}
-
-/** Per-request options for endpoints that need an explicit bearer token. */
-export type BearerTokenRequestOptions = AuthRequestOptions & {
-  /** Bearer token sent as the `Authorization` header for this request. */
-  token?: string | undefined
-}
-
-/** Options for starting an external OAuth flow. */
-export type AuthorizeUrlOptions = {
-  provider: OAuthProvider
-  scopes?: OAuthScopes
-  inviteToken?: string
-  codeChallenge?: string
-  codeChallengeMethod?: CodeChallengeMethod
-  redirectTo?: string
-  projectId?: ProjectId
-}
-
-/** Options for linking an external identity to the current user. */
-export type LinkIdentityOptions = AuthenticatedRequestOptions & {
-  provider: OAuthProvider
-  scopes?: OAuthScopes
-  skipHttpRedirect?: boolean
-  codeChallenge?: string
-  codeChallengeMethod?: CodeChallengeMethod
-}
-
-/** Admin list users query options. */
-export type AdminListUsersOptions = AuthRequestOptions & {
-  page?: number
-  perPage?: number
-  sort?: 'created_at asc' | 'created_at desc'
-  filter?: string
+export type ExperimentalFeatureFlags = {
+  /**
+   * Enables passkey support:
+   *   - `auth.signInWithPasskey()`, `auth.registerPasskey()`
+   *   - `auth.passkey.*`
+   *   - `auth.admin.passkey.*`
+   *
+   * Defaults to `false`. Calling any passkey method while this flag is
+   * disabled throws a descriptive error at call time.
+   */
+  passkey?: boolean
 }

@@ -54,7 +54,7 @@ export type PublicFactor = {
   id?: FactorId
 
   /** Kind of MFA factor. */
-  factor_type?: FactorType
+  factor_type: FactorType
 
   /** Factor verification status. */
   status?: FactorStatus

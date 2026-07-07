@@ -49,15 +49,12 @@ export class Jupiter {
 
   private createAuth(): JupiterAuth {
     const authUrl = this.options.authUrl ?? `${this.baseUrl}${defaultAuthPath}`
+    const headers = normalizeHeaders(this.options.headers)
 
     return new JupiterAuth(authUrl, {
-      claims: this.options.claims,
       fetch: this.options.fetch,
-      headers: this.options.headers,
-      projectId: this.options.projectId,
-      retryAttempts: this.options.retryAttempts,
-      timeoutMs: this.options.timeoutMs,
-      token: this.options.token
+      ...(headers ? { headers } : {}),
+      projectId: this.options.projectId
     })
   }
 
@@ -77,4 +74,12 @@ export class Jupiter {
 
 function normalizeBaseUrl(baseUrl: string): string {
   return baseUrl.replace(/\/+$/, '')
+}
+
+function normalizeHeaders(headers: HeadersInit | undefined): { [key: string]: string } | undefined {
+  if (!headers) {
+    return undefined
+  }
+
+  return Object.fromEntries(new Headers(headers).entries())
 }
