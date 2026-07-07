@@ -1,6 +1,8 @@
 import type { JsonObject } from '@jupiter-cloud/core'
 import type { ChallengeId, FactorId, FactorType, UserId } from './primitives'
 import type { PublicUser, TotpObject, WeakPassword, WebAuthnChallengeData } from './models'
+import type { AuthError } from '../internal/errors'
+import type { Provider } from './providers'
 
 /** Empty JSON object response. */
 export type EmptyObject = Record<string, never>
@@ -109,3 +111,167 @@ export type UnenrollFactorResponse = {
 export type AdminListUsersResponse = {
   users: PublicUser[]
 }
+
+/**
+ * similar to RequestResult except it allows you to destructure the possible shape of the success response
+ */
+export type RequestResultSafeDestructure<T> =
+  | { data: T; error: null }
+  | {
+      data: T extends object ? { [K in keyof T]: null } : null
+      error: AuthError
+    }
+
+export type AuthResponse = RequestResultSafeDestructure<{
+  user: PublicUser | null
+  session: AccessTokenResponse | null
+}>
+
+export type AuthTokenResponsePassword = RequestResultSafeDestructure<{
+  user: PublicUser
+  session: AccessTokenResponse
+  weakPassword?: WeakPassword
+}>
+
+export type OAuthResponse =
+  | {
+      data: {
+        provider: Provider
+        url: string
+      }
+      error: null
+    }
+  | {
+      data: {
+        provider: Provider
+        url: null
+      }
+      error: AuthError
+    }
+
+export type AuthResponsePassword = RequestResultSafeDestructure<{
+  user: PublicUser | null
+  session: AccessTokenResponse | null
+  weak_password?: WeakPassword | null
+}>
+
+export type AuthTokenResponse = RequestResultSafeDestructure<{
+  user: PublicUser
+  session: AccessTokenResponse
+}>
+
+/**
+ * AuthOtpResponse is returned when OTP is used.
+ *
+ */
+export type AuthOtpResponse = RequestResultSafeDestructure<{
+  user: null
+  session: null
+  messageId?: string | null
+}>
+
+/**
+ * a shared result type that encapsulates errors instead of throwing them, allows you to optionally specify the ErrorType
+ */
+export type RequestResult<T, ErrorType extends Error = AuthError> =
+  | {
+      data: T
+      error: null
+    }
+  | {
+      data: null
+      error: Error extends AuthError ? AuthError : ErrorType
+    }
+
+export type CallRefreshTokenResult = RequestResult<AccessTokenResponse>
+
+export type UserResponse = RequestResultSafeDestructure<{
+  user: PublicUser
+}>
+
+export type AuthMFAUnenrollResponse = RequestResult<{
+  /** ID of the factor that was successfully unenrolled. */
+  id: string
+}>
+
+export type AuthMFAEnrollTOTPResponse = RequestResult<
+  AuthMFAEnrollResponseBase<'totp'> & AuthMFAEnrollTOTPResponseFields
+>
+type AuthMFAEnrollResponseBase<T extends FactorType> = {
+  /** ID of the factor that was just enrolled (in an unverified state). */
+  id: string
+
+  /** Type of MFA factor.*/
+  type: T
+
+  /** Friendly name of the factor, useful for distinguishing between factors **/
+  friendly_name?: string
+}
+
+type AuthMFAEnrollTOTPResponseFields = {
+  /** TOTP enrollment information. */
+  totp: {
+    /** Contains a QR code encoding the authenticator URI. You can
+     * convert it to a URL by prepending `data:image/svg+xml;utf-8,` to
+     * the value. Avoid logging this value to the console. */
+    qr_code: string
+
+    /** The TOTP secret (also encoded in the QR code). Show this secret
+     * in a password-style field to the user, in case they are unable to
+     * scan the QR code. Avoid logging this value to the console. */
+    secret: string
+
+    /** The authenticator URI encoded within the QR code, should you need
+     * to use it. Avoid loggin this value to the console. */
+    uri: string
+  }
+}
+
+type AuthMFAEnrollPhoneResponseFields = {
+  /** Phone number of the MFA factor in E.164 format. Used to send messages  */
+  phone: string
+}
+
+export type AuthMFAEnrollPhoneResponse = RequestResult<
+  AuthMFAEnrollResponseBase<'phone'> & AuthMFAEnrollPhoneResponseFields
+>
+
+type AuthMFAEnrollWebauthnFields = {
+  /** no extra fields for now, kept for consistency and for possible future changes  */
+}
+
+/**
+ * Response type for WebAuthn factor enrollment.
+ * Returns the enrolled factor ID and metadata.
+ * @see {@link https://w3c.github.io/webauthn/#sctn-registering-a-new-credential W3C WebAuthn Spec - Registering a New Credential}
+ */
+export type AuthMFAEnrollWebauthnResponse = RequestResult<
+  AuthMFAEnrollResponseBase<'webauthn'> & AuthMFAEnrollWebauthnFields
+>
+
+/**
+ * Data returned after successful MFA verification.
+ * Contains new session tokens and updated user information.
+ */
+export type AuthMFAVerifyResponseData = {
+  /** New access token (JWT) after successful verification. */
+  access_token: string
+
+  /** Type of token, always `bearer`. */
+  token_type: 'bearer'
+
+  /** Number of seconds in which the access token will expire. */
+  expires_in: number
+
+  /** Refresh token you can use to obtain new access tokens when expired. */
+  refresh_token: string
+
+  /** Updated user profile. */
+  user: PublicUser
+}
+
+/**
+ * Response type for MFA verification operations.
+ * Returns session tokens on successful verification.
+ */
+export type AuthMFAVerifyResponse = RequestResult<AuthMFAVerifyResponseData>

@@ -13,25 +13,21 @@ describe('JupiterAuth', () => {
       token_type: 'bearer'
     })
 
-    await auth.signUp(
-      {
-        codeChallenge: 'challenge',
-        codeChallengeMethod: 's256',
-        email: 'user@example.com',
-        password: 'password1'
-      },
-      {
-        redirectTo: 'https://app.example.test/callback'
+    await auth.signUpWithEmailAndPassword({
+      email: 'user@example.com',
+      password: 'password1',
+      options: {
+        emailRedirectTo: 'https://app.example.test/callback'
       }
-    )
+    })
 
-    expect(requests[0]?.url).toBe('https://auth.example.test/signup')
+    expect(requests[0]?.url).toBe(
+      'https://auth.example.test/signup?redirect_to=https%3A%2F%2Fapp.example.test%2Fcallback'
+    )
     expect(requests[0]?.method).toBe('POST')
     expect(requests[0]?.headers.get(JUPITER_PROJECT_ID_HEADER)).toBe('project-1')
-    expect(requests[0]?.headers.get('redirect_to')).toBe('https://app.example.test/callback')
     expectJsonBody(requests[0]?.body, {
-      code_challenge: 'challenge',
-      code_challenge_method: 's256',
+      attributes: {},
       email: 'user@example.com',
       password: 'password1'
     })
@@ -47,7 +43,7 @@ describe('JupiterAuth', () => {
       token_type: 'bearer'
     })
 
-    await auth.signInWithPassword({
+    await auth.signInWithEmailAndPassword({
       email: 'user@example.com',
       password: 'password1'
     })
@@ -86,7 +82,7 @@ describe('JupiterAuth', () => {
     })
   })
 
-  it('sends authenticated role and claims headers for user operations', async () => {
+  it('sends auth headers for user operations', async () => {
     const requests: CapturedRequest[] = []
     const auth = createAuth(requests, {
       created_at: '2026-07-05T12:00:00.000Z',
@@ -98,54 +94,43 @@ describe('JupiterAuth', () => {
       updated_at: '2026-07-05T12:00:00.000Z'
     })
 
-    await auth.getUser({
-      claims: {
-        sub: 'user-1'
-      }
-    })
+    await auth.getUser('access-token')
 
-    expect(requests[0]?.headers.get('X-Jupiter-Role')).toBe('authenticated')
-    expect(requests[0]?.headers.get('X-Jupiter-Claims')).toBe('{"sub":"user-1"}')
+    expect(requests[0]?.headers.get(JUPITER_PROJECT_ID_HEADER)).toBe('project-1')
+    expect(requests[0]?.headers.get('Authorization')).toBe('Bearer access-token')
   })
 
-  it('sends admin role headers for admin operations', async () => {
+  it('sends auth headers for admin operations', async () => {
     const requests: CapturedRequest[] = []
     const auth = createAuth(requests, {
       users: []
     })
 
-    await auth.adminListUsers({
-      page: 2,
-      perPage: 10,
-      sort: 'created_at desc'
-    })
+    await auth.adminSignOut('access-token', 'global')
 
-    expect(requests[0]?.url).toBe(
-      'https://auth.example.test/admin/users?page=2&per_page=10&sort=created_at+desc'
-    )
-    expect(requests[0]?.headers.get('X-Jupiter-Role')).toBe('admin')
+    expect(requests[0]?.url).toBe('https://auth.example.test/logout?scope=global')
+    expect(requests[0]?.headers.get(JUPITER_PROJECT_ID_HEADER)).toBe('project-1')
+    expect(requests[0]?.headers.get('Authorization')).toBe('Bearer access-token')
   })
 
-  it('posts OAuth form callbacks as form-url-encoded bodies', async () => {
-    const requests: CapturedRequest[] = []
-    const auth = createAuth(requests, new Blob())
-
-    await auth.externalProviderCallbackPost({
-      code: 'provider-code',
-      state: 'state-1',
-      user: '{"email":"user@example.com"}'
+  it('builds OAuth callback URLs', () => {
+    const auth = new JupiterAuth('https://auth.example.test', {
+      projectId: 'project-1'
     })
 
-    expect(requests[0]?.url).toBe('https://auth.example.test/callback')
-    expect(requests[0]?.method).toBe('POST')
-    expect(requests[0]?.headers.get('content-type')).toBe(
-      'application/x-www-form-urlencoded;charset=UTF-8'
+    const url = new URL(
+      auth.getExternalProviderCallbackUrl({
+        code: 'provider-code',
+        state: 'state-1'
+      })
     )
-    expect(requests[0]?.body).toBeInstanceOf(URLSearchParams)
-    expect(Object.fromEntries(requests[0]?.body as URLSearchParams)).toEqual({
+
+    expect(url.origin).toBe('https://auth.example.test')
+    expect(url.pathname).toBe('/callback')
+    expect(Object.fromEntries(url.searchParams)).toEqual({
       code: 'provider-code',
-      state: 'state-1',
-      user: '{"email":"user@example.com"}'
+      project_id: 'project-1',
+      state: 'state-1'
     })
   })
 })
