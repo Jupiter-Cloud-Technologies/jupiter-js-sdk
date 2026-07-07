@@ -1,5 +1,11 @@
 # @jupiter-cloud/storage
 
+## 0.4.1
+
+### Patch Changes
+
+- @jupiter-cloud/core@0.4.1
+
 ## 0.4.0
 
 ### Patch Changes

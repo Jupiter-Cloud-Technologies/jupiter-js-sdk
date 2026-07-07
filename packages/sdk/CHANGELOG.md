@@ -1,5 +1,14 @@
 # @jupiter-cloud/sdk
 
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [16c20b4]
+  - @jupiter-cloud/auth@0.4.1
+  - @jupiter-cloud/core@0.4.1
+  - @jupiter-cloud/storage@0.4.1
+
 ## 0.4.0
 
 ### Minor Changes
