@@ -1,7 +1,6 @@
 import { resolveFetch, type Fetch } from '@jupiter-cloud/core'
 import { isAuthError, type AuthError } from './internal/errors'
 import type {
-  AdminUserAttributes,
   AuthMFAAdminDeleteFactorParams,
   AuthMFAAdminDeleteFactorResponse,
   AuthMFAAdminListFactorsParams,
