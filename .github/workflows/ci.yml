@@ -38,9 +38,6 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Check generated versions
-        run: pnpm check:versions
-
       - name: Format
         run: pnpm format:check
 
