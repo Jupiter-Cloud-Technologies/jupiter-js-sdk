@@ -82,6 +82,19 @@ importers:
 
   packages/core: {}
 
+  packages/postgrest:
+    dependencies:
+      '@jupiter-cloud/core':
+        specifier: workspace:*
+        version: link:../core
+      '@supabase/postgrest-js':
+        specifier: 2.79.0
+        version: 2.79.0
+    devDependencies:
+      tsd:
+        specifier: ^0.31.2
+        version: 0.31.2
+
   packages/sdk:
     dependencies:
       '@jupiter-cloud/auth':
@@ -90,6 +103,9 @@ importers:
       '@jupiter-cloud/core':
         specifier: workspace:*
         version: link:../core
+      '@jupiter-cloud/postgrest':
+        specifier: workspace:*
+        version: link:../postgrest
       '@jupiter-cloud/storage':
         specifier: workspace:*
         version: link:../storage
@@ -766,6 +782,10 @@ packages:
   '@sindresorhus/is@4.6.0':
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
     engines: {node: '>=10'}
+
+  '@supabase/postgrest-js@2.79.0':
+    resolution: {integrity: sha512-2i8EFm3/49ecjt6dk/TGVROBbtOmhryiC4NL3u0FBIrm2hqj+FvbELv1jjM6r+a6abnh+uzIV/bFsWHAa/k3/w==}
+    engines: {node: '>=20.0.0'}
 
   '@tsd/typescript@5.4.5':
     resolution: {integrity: sha512-saiCxzHRhUrRxQV2JhH580aQUZiKQUXI38FcAcikcfOomAil4G4lxT0RfrrKywoAYP/rqAdYXYmNRLppcd+hQQ==}
@@ -2160,6 +2180,9 @@ packages:
     engines: {node: '>=14.16'}
     hasBin: true
 
+  tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+
   tsup@8.5.1:
     resolution: {integrity: sha512-xtgkqwdhpKWr3tKPmCkvYmS9xnQK3m3XgxZHwSUjvfTjp7YfXe5tT3GgWi0F2N+ZSMsOeWeZFh7ZZFg5iPhing==}
     engines: {node: '>=18'}
@@ -2946,6 +2969,10 @@ snapshots:
   '@sinclair/typebox@0.27.10': {}
 
   '@sindresorhus/is@4.6.0': {}
+
+  '@supabase/postgrest-js@2.79.0':
+    dependencies:
+      tslib: 2.8.1
 
   '@tsd/typescript@5.4.5': {}
 
@@ -4341,6 +4368,8 @@ snapshots:
       meow: 9.0.0
       path-exists: 4.0.0
       read-pkg-up: 7.0.1
+
+  tslib@2.8.1: {}
 
   tsup@8.5.1(postcss@8.5.16)(tsx@4.23.0)(typescript@5.8.3)(yaml@2.9.0):
     dependencies:

@@ -4,6 +4,7 @@
     "packages/core/src/index.ts",
     "packages/auth/src/index.ts",
     "packages/storage/src/index.ts",
+    "packages/postgrest/src/index.ts",
     "packages/sdk/src/index.ts"
   ],
   "entryPointStrategy": "resolve",

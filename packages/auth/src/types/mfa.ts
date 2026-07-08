@@ -17,6 +17,7 @@ import type { WebAuthnError } from '../internal/webauthn.errors'
 import type { PublicFactor } from './models'
 import type { Fetch } from '@jupiter-cloud/core'
 import type { AuthMFAVerifyResponse } from './outputs'
+import type { AuthChangeEvent } from './authEvents'
 
 /** One of the providers supported by GoTrue. Use the `custom:` prefix for custom OIDC providers (e.g. `custom:my-oidc-provider`). */
 export type Provider =
@@ -46,17 +47,6 @@ export type Provider =
   | 'zoom'
   | 'fly'
   | `custom:${string}`
-
-export type AuthChangeEventMFA = 'MFA_CHALLENGE_VERIFIED'
-
-export type AuthChangeEvent =
-  | 'INITIAL_SESSION'
-  | 'PASSWORD_RECOVERY'
-  | 'SIGNED_IN'
-  | 'SIGNED_OUT'
-  | 'TOKEN_REFRESHED'
-  | 'USER_UPDATED'
-  | AuthChangeEventMFA
 
 /**
  * Provide your own global lock implementation instead of the default
@@ -1595,7 +1585,7 @@ export type AuthMFAAdminListFactorsParams = {
  *
  * @expermental
  */
-export interface GoTrueAdminMFAApi {
+export interface JupiterAuthAdminMFAApi {
   /**
    * Lists all factors associated to a user.
    *

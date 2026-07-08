@@ -193,6 +193,10 @@ interface AuthSessionData {
   [key: string]: any // server returns additional fields (token_type, provider_token, etc.) copied into Session
 }
 
+export function _noResolveJsonResponse(data: Response): Response {
+  return data
+}
+
 /**
  * hasSession checks if the response object contains a valid session
  * @param data A response object

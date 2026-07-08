@@ -328,6 +328,75 @@ export type SignUpWithPasswordRequest = {
   }
 }
 
+export interface UserAttributes {
+  /**
+   * The user's current password
+   *
+   * This is only ever present when the user is resetting
+   * their password and GOTRUE_SECURITY_UPDATE_PASSWORD_REQUIRE_CURRENT_PASSWORD is true.
+   *
+   */
+  current_password?: string
+
+  /**
+   * The user's email.
+   */
+  email?: string
+
+  /**
+   * The user's phone.
+   */
+  phone?: string
+
+  /**
+   * The user's password.
+   */
+  password?: string
+
+  /**
+   * The nonce sent for reauthentication if the user's password is to be updated.
+   *
+   * Call reauthenticate() to obtain the nonce first.
+   */
+  nonce?: string
+
+  /**
+   * A custom data object to store the user's metadata. This maps to the `auth.users.raw_user_meta_data` column.
+   *
+   * The `data` should be a JSON object that includes user-specific info, such as their first and last name.
+   *
+   */
+  data?: object
+}
+
+export interface AdminUserAttributesParams {
+  attributes?: object
+  system_attributes?: object
+  email_confirm?: boolean
+  phone_confirm?: boolean
+  /**
+   * The user's email.
+   */
+  email?: string
+
+  /**
+   * The user's phone.
+   */
+  phone?: string
+
+  /**
+   * The user's password.
+   */
+  password?: string
+
+  /**
+   * The nonce sent for reauthentication if the user's password is to be updated.
+   *
+   * Call reauthenticate() to obtain the nonce first.
+   */
+  nonce?: string
+}
+
 type PasswordCredentialsBase =
   { email: string; password: string } | { phone: string; password: string }
 
