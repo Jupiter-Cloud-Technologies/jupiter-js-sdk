@@ -4,67 +4,44 @@ import { Jupiter } from '../src'
 
 describe('Jupiter', () => {
   it('creates a storage client', () => {
-    const client = new Jupiter({
-      baseUrl: 'https://api.example.test',
-      projectId: 'project-1'
-    })
+    const client = new Jupiter('https://api.example.test', 'project-1')
 
     expect(client.auth).toBeDefined()
     expect(client.storage).toBeDefined()
   })
 
-  it('updates service clients when base URL changes', async () => {
+  it('uses the configured base URL for service clients', async () => {
     const requests: CapturedRequest[] = []
-    const client = new Jupiter({
-      baseUrl: 'https://api-one.example.test/',
-      fetch: createFetch(requests),
-      projectId: 'project-1'
+    const client = new Jupiter('https://api.example.test/', 'project-1', {
+      global: {
+        fetch: createFetch(requests)
+      }
     })
 
-    await client.storage.listBuckets()
-    await client.auth.getUser('access-token')
-    client.setBaseUrl('https://api-two.example.test/')
     await client.storage.listBuckets()
     await client.auth.getUser('access-token')
 
     expect(requests.map((request) => request.url)).toEqual([
-      'https://api-one.example.test/storage/buckets',
-      'https://api-one.example.test/auth/user',
-      'https://api-two.example.test/storage/buckets',
-      'https://api-two.example.test/auth/user'
+      'https://api.example.test/storage/buckets',
+      'https://api.example.test/auth/user'
     ])
   })
 
-  it('updates service clients when project ID changes', async () => {
+  it('uses the configured project ID for service clients', async () => {
     const requests: CapturedRequest[] = []
-    const client = new Jupiter({
-      baseUrl: 'https://api.example.test',
-      fetch: createFetch(requests),
-      projectId: 'project-1'
+    const client = new Jupiter('https://api.example.test', 'project-1', {
+      global: {
+        fetch: createFetch(requests)
+      }
     })
 
-    await client.storage.listBuckets()
-    await client.auth.getUser('access-token')
-    client.setProjectId('project-2')
     await client.storage.listBuckets()
     await client.auth.getUser('access-token')
 
     expect(requests.map((request) => request.headers.get(JUPITER_PROJECT_ID_HEADER))).toEqual([
       'project-1',
-      'project-1',
-      'project-2',
-      'project-2'
+      'project-1'
     ])
-  })
-
-  it('returns itself from setters for chaining', () => {
-    const client = new Jupiter({
-      baseUrl: 'https://api.example.test',
-      projectId: 'project-1'
-    })
-
-    expect(client.setBaseUrl('https://api-two.example.test')).toBe(client)
-    expect(client.setProjectId('project-2')).toBe(client)
   })
 })
 
