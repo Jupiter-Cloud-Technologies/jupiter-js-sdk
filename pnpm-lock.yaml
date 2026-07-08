@@ -80,7 +80,11 @@ importers:
         specifier: ^0.31.2
         version: 0.31.2
 
-  packages/core: {}
+  packages/core:
+    devDependencies:
+      tsd:
+        specifier: ^0.31.2
+        version: 0.31.2
 
   packages/postgrest:
     dependencies:
