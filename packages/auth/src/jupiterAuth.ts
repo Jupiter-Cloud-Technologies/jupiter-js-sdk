@@ -145,6 +145,7 @@ import type { AuthClientOptions } from './types/authSettings'
 import { stringToUint8Array } from './internal/base64'
 import { memoryLocalStorageAdapter } from './internal/local-storage'
 import { polyfillGlobalThis } from './internal/polyfills'
+import JupiterAuthAdmin from './admin'
 
 polyfillGlobalThis() // Make "globalThis" available
 
@@ -200,7 +201,7 @@ export class JupiterAuth {
 
   private instanceID: number
 
-  // admin: GoTrueAdminApi
+  admin: JupiterAuthAdmin
 
   mfa: MFAApi
 
@@ -371,6 +372,12 @@ export class JupiterAuth {
       getAuthenticatorAssuranceLevel: this._getAuthenticatorAssuranceLevel.bind(this),
       webauthn: new WebAuthnApi(this)
     }
+
+    this.admin = new JupiterAuthAdmin({
+      url: settings.url,
+      headers: settings.headers,
+      fetch: settings.fetch
+    })
 
     if (this.persistSession) {
       if (settings.storage) {

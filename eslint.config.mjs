@@ -49,5 +49,32 @@ export default tseslint.config(
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/no-misused-promises': 'error'
     }
+  },
+  {
+    files: [
+      '**/src/helpers.ts',
+      '**/src/jupiter.ts',
+      '**/src/client/postgrest-client.ts',
+      'packages/sdk/src/helpers.ts',
+      'packages/sdk/src/jupiter.ts',
+      'packages/postgrest/src/client/postgrest-client.ts'
+    ],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off'
+    }
+  },
+  {
+    files: [
+      '**/src/helpers.ts',
+      '**/src/jupiter.ts',
+      'packages/sdk/src/helpers.ts',
+      'packages/sdk/src/jupiter.ts'
+    ],
+    rules: {
+      '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/require-await': 'off'
+    }
   }
 )

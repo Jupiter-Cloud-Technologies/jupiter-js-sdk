@@ -1,12 +1,12 @@
 {
-  "name": "@jupiter-cloud/sdk",
+  "name": "@jupiter-cloud/postgrest",
   "version": "0.4.1",
-  "description": "Aggregate JavaScript and TypeScript client for Jupiter Cloud.",
+  "description": "JavaScript and TypeScript client for Jupiter PostgREST.",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/Jupiter-Cloud-Technologies/jupiter-js-sdk",
-    "directory": "packages/sdk"
+    "directory": "packages/postgrest"
   },
   "bugs": {
     "url": "https://github.com/Jupiter-Cloud-Technologies/jupiter-js-sdk/issues"
@@ -46,14 +46,12 @@
     "test:types": "tsd",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "@jupiter-cloud/auth": "workspace:*",
-    "@jupiter-cloud/core": "workspace:*",
-    "@jupiter-cloud/storage": "workspace:*",
-    "@jupiter-cloud/postgrest": "workspace:*"
-  },
   "devDependencies": {
     "tsd": "^0.31.2"
+  },
+  "dependencies": {
+    "@jupiter-cloud/core": "workspace:*",
+    "@supabase/postgrest-js": "2.79.0"
   },
   "engines": {
     "node": ">=20"
