@@ -43,10 +43,16 @@
     "clean": "rm -rf dist coverage",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:types": "echo \"No type tests for core yet\"",
+    "test:types": "tsd",
     "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "tsd": "^0.31.2"
   },
   "engines": {
     "node": ">=20"
+  },
+  "tsd": {
+    "directory": "test/types"
   }
 }

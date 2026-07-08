@@ -3,8 +3,10 @@ import { JUPITER_PROJECT_ID_HEADER } from '@jupiter-cloud/core'
 import { Jupiter } from '../src'
 
 describe('Jupiter', () => {
+  const projectId = '00000000-0000-4000-8000-000000000001'
+
   it('creates a storage client', () => {
-    const client = new Jupiter('https://api.example.test', 'project-1')
+    const client = new Jupiter('https://api.example.test', projectId)
 
     expect(client.auth).toBeDefined()
     expect(client.storage).toBeDefined()
@@ -12,7 +14,7 @@ describe('Jupiter', () => {
 
   it('uses the configured base URL for service clients', async () => {
     const requests: CapturedRequest[] = []
-    const client = new Jupiter('https://api.example.test/', 'project-1', {
+    const client = new Jupiter('https://api.example.test/', projectId, {
       global: {
         fetch: createFetch(requests)
       }
@@ -23,13 +25,13 @@ describe('Jupiter', () => {
 
     expect(requests.map((request) => request.url)).toEqual([
       'https://api.example.test/storage/buckets',
-      'https://api.example.test/auth/user'
+      'https://api.example.test/user'
     ])
   })
 
   it('uses the configured project ID for service clients', async () => {
     const requests: CapturedRequest[] = []
-    const client = new Jupiter('https://api.example.test', 'project-1', {
+    const client = new Jupiter('https://api.example.test', projectId, {
       global: {
         fetch: createFetch(requests)
       }
@@ -39,8 +41,8 @@ describe('Jupiter', () => {
     await client.auth.getUser('access-token')
 
     expect(requests.map((request) => request.headers.get(JUPITER_PROJECT_ID_HEADER))).toEqual([
-      'project-1',
-      'project-1'
+      projectId,
+      projectId
     ])
   })
 })
