@@ -1,19 +1,58 @@
 import { expectAssignable, expectType } from 'tsd'
-import { JupiterPostgrest, type PostgrestResult } from '../..'
 
-type Todo = {
-  id: number
-  name: string
+import {
+  NeonPostgrestClient,
+  type DefaultSchemaName,
+  type NeonPostgrestClientConstructorOptions
+} from '../..'
+
+type Database = {
+  public: {
+    Tables: {
+      todos: {
+        Row: {
+          id: number
+          name: string
+        }
+        Insert: {
+          name: string
+        }
+        Update: {
+          name?: string
+        }
+        Relationships: []
+      }
+    }
+    Views: Record<string, never>
+    Functions: Record<string, never>
+  }
 }
 
-const postgrest = new JupiterPostgrest('https://api.example.test/rest', {
-  projectId: 'project-1'
+expectType<'public'>('public' as DefaultSchemaName<Database>)
+
+expectAssignable<NeonPostgrestClientConstructorOptions<'public'>>({
+  dataApiUrl: 'https://api.example.test/rest',
+  options: {
+    db: {
+      schema: 'public'
+    },
+    global: {
+      fetch,
+      headers: {
+        authorization: 'Bearer token'
+      }
+    }
+  }
 })
 
-expectType<PostgrestResult<Todo[]>>(postgrest.select<Todo>('todos'))
-expectType<PostgrestResult<Todo[]>>(postgrest.insert<Todo>('todos', { name: 'ship' }))
-expectType<PostgrestResult<Todo[]>>(postgrest.update<Todo>('todos', { name: 'ship' }))
-expectType<PostgrestResult<Todo[]>>(postgrest.upsert<Todo>('todos', [{ name: 'ship' }]))
-expectType<PostgrestResult<Todo[]>>(postgrest.delete<Todo>('todos'))
+const postgrest = new NeonPostgrestClient<Database>({
+  dataApiUrl: 'https://api.example.test/rest',
+  options: {
+    db: {
+      schema: 'public'
+    }
+  }
+})
 
-expectAssignable<Promise<unknown>>(postgrest.request<unknown>('/todos'))
+expectAssignable<NeonPostgrestClient<Database>>(postgrest)
+expectAssignable<PromiseLike<unknown>>(postgrest.from('todos').select())
