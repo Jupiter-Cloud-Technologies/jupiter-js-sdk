@@ -113,6 +113,26 @@ describe('JupiterAuth', () => {
     expect(requests[0]?.headers.get('Authorization')).toBe('Bearer access-token')
   })
 
+  it('adds project ID to social provider authorize URLs', async () => {
+    const auth = new JupiterAuth('https://auth.example.test', {
+      projectId: 'project-1'
+    })
+
+    const {
+      data: { url }
+    } = await auth.signInWithSocial({
+      provider: 'github',
+      options: {
+        skipBrowserRedirect: true
+      }
+    })
+
+    expect(Object.fromEntries(new URL(url).searchParams)).toEqual({
+      project_id: 'project-1',
+      provider: 'github'
+    })
+  })
+
   it('builds OAuth callback URLs', () => {
     const auth = new JupiterAuth('https://auth.example.test', {
       projectId: 'project-1'

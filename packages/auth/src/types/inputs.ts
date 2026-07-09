@@ -329,44 +329,19 @@ export type SignUpWithPasswordRequest = {
 }
 
 export interface UserAttributes {
-  /**
-   * The user's current password
-   *
-   * This is only ever present when the user is resetting
-   * their password and GOTRUE_SECURITY_UPDATE_PASSWORD_REQUIRE_CURRENT_PASSWORD is true.
-   *
-   */
-  current_password?: string
-
-  /**
-   * The user's email.
-   */
   email?: string
 
-  /**
-   * The user's phone.
-   */
   phone?: string
 
-  /**
-   * The user's password.
-   */
   password?: string
 
-  /**
-   * The nonce sent for reauthentication if the user's password is to be updated.
-   *
-   * Call reauthenticate() to obtain the nonce first.
-   */
-  nonce?: string
+  attributes?: object
+}
 
-  /**
-   * A custom data object to store the user's metadata. This maps to the `auth.users.raw_user_meta_data` column.
-   *
-   * The `data` should be a JSON object that includes user-specific info, such as their first and last name.
-   *
-   */
-  data?: object
+export interface UserUpdatePasswordParams {
+  current_password?: string
+
+  new_password?: string
 }
 
 export interface AdminUserAttributesParams {
@@ -423,7 +398,7 @@ export type SignInWithPhoneAndPasswordRequest = {
 }
 
 export type SignInWithOAuthRequest = {
-  /** One of the providers supported by GoTrue. */
+  /** One of the OAuth providers supported by Jupiter Auth. */
   provider: Provider
   options?: {
     /** A URL to send the user to after they are confirmed. */
@@ -626,47 +601,6 @@ export interface AttributeChangeConfirmParams {
  */
 export type StrictOmit<T, K extends keyof T> = Omit<T, K>
 
-export interface UserAttributes {
-  /**
-   * The user's current password
-   *
-   * This is only ever present when the user is resetting
-   * their password and GOTRUE_SECURITY_UPDATE_PASSWORD_REQUIRE_CURRENT_PASSWORD is true.
-   *
-   */
-  current_password?: string
-
-  /**
-   * The user's email.
-   */
-  email?: string
-
-  /**
-   * The user's phone.
-   */
-  phone?: string
-
-  /**
-   * The user's password.
-   */
-  password?: string
-
-  /**
-   * The nonce sent for reauthentication if the user's password is to be updated.
-   *
-   * Call reauthenticate() to obtain the nonce first.
-   */
-  nonce?: string
-
-  /**
-   * A custom data object to store the user's metadata. This maps to the `auth.users.raw_user_meta_data` column.
-   *
-   * The `data` should be a JSON object that includes user-specific info, such as their first and last name.
-   *
-   */
-  attributes?: object
-}
-
 export type MFAUnenrollParams = {
   /** ID of the factor being unenrolled. */
   factorId: string
@@ -702,7 +636,7 @@ export type SignInWithIdTokenCredentials = {
 }
 
 export type SignInWithOAuthCredentials = {
-  /** One of the providers supported by GoTrue. */
+  /** One of the OAuth providers supported by Jupiter Auth. */
   provider: Provider
   options?: {
     /** A URL to send the user to after they are confirmed. */

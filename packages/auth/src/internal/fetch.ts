@@ -52,7 +52,7 @@ interface AuthRequestOptions extends FetchOptions {
   body?: object
   query?: { [key: string]: string }
   /**
-   * Function that transforms api response from gotrue into a desirable / standardised format
+   * Function that transforms api response from Jupiter Auth into a desirable / standardised format
    */
   xform?: (data: any) => any
 }
@@ -183,7 +183,7 @@ async function _handleRequest(
   }
 }
 
-/** Raw session data from GoTrue server response. */
+/** Raw session data from Jupiter Auth server response. */
 interface AuthSessionData {
   access_token?: string
   refresh_token?: string
@@ -229,11 +229,11 @@ export function _sessionResponse(data: AuthSessionData): AuthResponse {
 }
 
 /** Raw session data that includes weak password info (password sign-in endpoints). */
-interface GoTrueSessionPasswordData extends AuthSessionData {
+interface AuthSessionPasswordData extends AuthSessionData {
   weak_password?: WeakPassword
 }
 
-export function _sessionResponsePassword(data: GoTrueSessionPasswordData): AuthResponsePassword {
+export function _sessionResponsePassword(data: AuthSessionPasswordData): AuthResponsePassword {
   const response = _sessionResponse(data) as AuthResponsePassword
 
   if (

@@ -16,7 +16,8 @@ export const resolveHeadersConstructor = () => {
 export const fetchWithAuth = (
   projectid: string,
   getAccessToken: () => Promise<string | null>,
-  customFetch?: Fetch
+  customFetch?: Fetch,
+  adminToken?: string
 ): Fetch => {
   const fetch = resolveFetch(customFetch)
   const HeadersConstructor = resolveHeadersConstructor()
@@ -27,6 +28,10 @@ export const fetchWithAuth = (
 
     if (!headers.has(JUPITER_PROJECT_ID_HEADER)) {
       headers.set('x-jupiter-project-id', projectid)
+    }
+
+    if (!headers.has('Authorization') && adminToken) {
+      headers.set('Authorization', `Bearer ${adminToken}`)
     }
 
     if (!headers.has('Authorization') && accessToken) {

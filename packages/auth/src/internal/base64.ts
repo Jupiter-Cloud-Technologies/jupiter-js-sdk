@@ -1,6 +1,6 @@
 /**
  * Avoid modifying this file. It's part of
- * https://github.com/supabase-community/base64url-js.  Submit all fixes on
+ * base64url-js compatibility behavior.  Submit all fixes on
  * that repo!
  */
 

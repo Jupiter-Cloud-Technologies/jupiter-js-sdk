@@ -543,7 +543,7 @@ export function mergeCredentialRequestOptions(
 }
 
 /**
- * WebAuthn API wrapper for Supabase Auth.
+ * WebAuthn API wrapper for Jupiter Auth.
  * Provides methods for enrolling, challenging, verifying, authenticating, and registering WebAuthn credentials.
  *
  * @experimental This API is experimental and may change in future releases

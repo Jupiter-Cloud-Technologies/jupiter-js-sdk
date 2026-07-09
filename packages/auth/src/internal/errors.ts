@@ -90,14 +90,8 @@ export type ErrorCode =
   | 'email_address_invalid'
 
 /**
- * Base error thrown by Supabase Auth helpers.
+ * Base error thrown by Jupiter Auth helpers.
  *
- * @example
- * ```ts
- * import { AuthError } from '@supabase/auth-js'
- *
- * throw new AuthError('Unexpected auth error', 500, 'unexpected')
- * ```
  */
 export class AuthError extends Error {
   /**
@@ -138,12 +132,6 @@ export class AuthError extends Error {
 /**
  * Flexible error class used to create named auth errors at runtime.
  *
- * @example
- * ```ts
- * import { CustomAuthError } from '@supabase/auth-js'
- *
- * throw new CustomAuthError('My custom auth error', 'MyAuthError', 400, 'custom_code')
- * ```
  */
 export class CustomAuthError extends AuthError {
   override name: string
@@ -159,12 +147,6 @@ export class CustomAuthError extends AuthError {
 /**
  * Error thrown when a transient fetch issue occurs.
  *
- * @example
- * ```ts
- * import { AuthRetryableFetchError } from '@supabase/auth-js'
- *
- * throw new AuthRetryableFetchError('Service temporarily unavailable', 503)
- * ```
  */
 export class AuthRetryableFetchError extends CustomAuthError {
   constructor(message: string, status: number) {
@@ -198,12 +180,6 @@ export type WeakPassword = {
 /**
  * Error thrown when a supplied password is considered weak.
  *
- * @example
- * ```ts
- * import { AuthWeakPasswordError } from '@supabase/auth-js'
- *
- * throw new AuthWeakPasswordError('Password too short', 400, ['min_length'])
- * ```
  */
 export class AuthWeakPasswordError extends CustomAuthError {
   /**
@@ -234,12 +210,6 @@ export class AuthWeakPasswordError extends CustomAuthError {
 /**
  * Error thrown when an operation requires a session but none is present.
  *
- * @example
- * ```ts
- * import { AuthSessionMissingError } from '@supabase/auth-js'
- *
- * throw new AuthSessionMissingError()
- * ```
  */
 export class AuthSessionMissingError extends CustomAuthError {
   constructor() {
@@ -248,14 +218,8 @@ export class AuthSessionMissingError extends CustomAuthError {
 }
 
 /**
- * Error returned directly from the GoTrue REST API.
+ * Error returned directly from the Jupiter Auth API.
  *
- * @example
- * ```ts
- * import { AuthApiError } from '@supabase/auth-js'
- *
- * throw new AuthApiError('Invalid credentials', 400, 'invalid_credentials')
- * ```
  */
 export class AuthApiError extends AuthError {
   override status: number
@@ -275,12 +239,6 @@ export function isAuthError(error: unknown): error is AuthError {
 /**
  * Error thrown when the token response is malformed.
  *
- * @example
- * ```ts
- * import { AuthInvalidTokenResponseError } from '@supabase/auth-js'
- *
- * throw new AuthInvalidTokenResponseError()
- * ```
  */
 export class AuthInvalidTokenResponseError extends CustomAuthError {
   constructor() {
@@ -291,12 +249,6 @@ export class AuthInvalidTokenResponseError extends CustomAuthError {
 /**
  * Error thrown when email/password credentials are invalid.
  *
- * @example
- * ```ts
- * import { AuthInvalidCredentialsError } from '@supabase/auth-js'
- *
- * throw new AuthInvalidCredentialsError('Email or password is incorrect')
- * ```
  */
 export class AuthInvalidCredentialsError extends CustomAuthError {
   constructor(message: string) {
@@ -309,12 +261,6 @@ export class AuthInvalidCredentialsError extends CustomAuthError {
  * This typically happens when the auth flow was initiated in a different
  * browser, device, or the storage was cleared.
  *
- * @example
- * ```ts
- * import { AuthPKCECodeVerifierMissingError } from '@supabase/auth-js'
- *
- * throw new AuthPKCECodeVerifierMissingError()
- * ```
  */
 export class AuthPKCECodeVerifierMissingError extends CustomAuthError {
   constructor() {
@@ -322,7 +268,7 @@ export class AuthPKCECodeVerifierMissingError extends CustomAuthError {
       'PKCE code verifier not found in storage. ' +
         'This can happen if the auth flow was initiated in a different browser or device, ' +
         'or if the storage was cleared. For SSR frameworks (Next.js, SvelteKit, etc.), ' +
-        'use @supabase/ssr on both the server and client to store the code verifier in cookies.',
+        'use Jupiter cookie storage on both the server and client to store the code verifier in cookies.',
       'AuthPKCECodeVerifierMissingError',
       400,
       'pkce_code_verifier_not_found'
@@ -343,16 +289,8 @@ export function isAuthRetryableFetchError(error: unknown): error is AuthRetryabl
  * Set on the `error` field of the refresh result so callers can tell "we
  * got rotated tokens but threw them away" apart from "the refresh failed."
  * The rotated session on the server will be picked up on the next refresh
- * via GoTrue's parent-of-active path.
+ * via the server's parent-of-active path.
  *
- * @example
- * ```ts
- * import { isAuthRefreshDiscardedError } from '@supabase/auth-js'
- *
- * if (isAuthRefreshDiscardedError(error)) {
- *   // Concurrent signOut/sign-in raced our refresh. Treat as a no-op.
- * }
- * ```
  */
 export class AuthRefreshDiscardedError extends CustomAuthError {
   constructor(
@@ -369,12 +307,6 @@ export function isAuthSessionMissingError(error: any): error is AuthSessionMissi
 /**
  * Error thrown when a JWT cannot be verified or parsed.
  *
- * @example
- * ```ts
- * import { AuthInvalidJwtError } from '@supabase/auth-js'
- *
- * throw new AuthInvalidJwtError('Token signature is invalid')
- * ```
  */
 export class AuthInvalidJwtError extends CustomAuthError {
   constructor(message: string) {
@@ -385,15 +317,6 @@ export class AuthInvalidJwtError extends CustomAuthError {
 /**
  * Error thrown when implicit grant redirects contain an error.
  *
- * @example
- * ```ts
- * import { AuthImplicitGrantRedirectError } from '@supabase/auth-js'
- *
- * throw new AuthImplicitGrantRedirectError('OAuth redirect failed', {
- *   error: 'access_denied',
- *   code: 'oauth_error',
- * })
- * ```
  */
 export class AuthImplicitGrantRedirectError extends CustomAuthError {
   details: { error: string; code: string } | null = null
@@ -419,12 +342,6 @@ export class AuthImplicitGrantRedirectError extends CustomAuthError {
 /**
  * Error thrown during PKCE code exchanges.
  *
- * @example
- * ```ts
- * import { AuthPKCEGrantCodeExchangeError } from '@supabase/auth-js'
- *
- * throw new AuthPKCEGrantCodeExchangeError('PKCE exchange failed')
- * ```
  */
 export class AuthPKCEGrantCodeExchangeError extends CustomAuthError {
   details: { error: string; code: string } | null = null

@@ -1,4 +1,4 @@
-/** One of the providers supported by GoTrue. Use the `custom:` prefix for custom OIDC providers (e.g. `custom:my-oidc-provider`). */
+/** One of the OAuth providers supported by Jupiter Auth. Use the `custom:` prefix for custom OIDC providers (e.g. `custom:my-oidc-provider`). */
 export type Provider =
   | 'apple'
   | 'azure'
