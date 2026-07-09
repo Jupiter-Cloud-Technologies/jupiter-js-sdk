@@ -1,6 +1,6 @@
 {
   "name": "@jupiter-cloud/sdk",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "Aggregate JavaScript and TypeScript client for Jupiter Cloud.",
   "license": "MIT",
   "repository": {

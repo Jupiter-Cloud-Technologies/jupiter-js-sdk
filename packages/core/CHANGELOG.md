@@ -1,5 +1,11 @@
 # @jupiter-cloud/core
 
+## 1.0.0
+
+### Major Changes
+
+- ac9b2cc: Admin APi auth
+
 ## 0.5.0
 
 ## 0.4.1

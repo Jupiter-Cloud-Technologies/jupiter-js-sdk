@@ -1,5 +1,60 @@
 # jupiter-js
 
+## 1.0.0
+
+### @jupiter-cloud/auth
+
+#### Major Changes
+
+- ac9b2cc: Admin APi auth
+
+#### Patch Changes
+
+- Updated dependencies [ac9b2cc]
+  - @jupiter-cloud/core@1.0.0
+
+### @jupiter-cloud/core
+
+#### Major Changes
+
+- ac9b2cc: Admin APi auth
+
+### @jupiter-cloud/postgrest
+
+#### Major Changes
+
+- ac9b2cc: Admin APi auth
+
+#### Patch Changes
+
+- Updated dependencies [ac9b2cc]
+  - @jupiter-cloud/core@1.0.0
+
+### @jupiter-cloud/sdk
+
+#### Major Changes
+
+- ac9b2cc: Admin APi auth
+
+#### Patch Changes
+
+- Updated dependencies [ac9b2cc]
+  - @jupiter-cloud/auth@1.0.0
+  - @jupiter-cloud/core@1.0.0
+  - @jupiter-cloud/postgrest@1.0.0
+  - @jupiter-cloud/storage@1.0.0
+
+### @jupiter-cloud/storage
+
+#### Major Changes
+
+- ac9b2cc: Admin APi auth
+
+#### Patch Changes
+
+- Updated dependencies [ac9b2cc]
+  - @jupiter-cloud/core@1.0.0
+
 ## 0.5.0
 
 ### @jupiter-cloud/auth

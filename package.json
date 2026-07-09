@@ -1,6 +1,6 @@
 {
   "name": "jupiter-js",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "description": "JavaScript and TypeScript SDKs for Jupiter Cloud.",

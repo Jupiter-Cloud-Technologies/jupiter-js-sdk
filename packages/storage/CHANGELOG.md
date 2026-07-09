@@ -1,5 +1,16 @@
 # @jupiter-cloud/storage
 
+## 1.0.0
+
+### Major Changes
+
+- ac9b2cc: Admin APi auth
+
+### Patch Changes
+
+- Updated dependencies [ac9b2cc]
+  - @jupiter-cloud/core@1.0.0
+
 ## 0.5.0
 
 ### Patch Changes
