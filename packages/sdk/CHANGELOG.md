@@ -1,5 +1,20 @@
 # @jupiter-cloud/sdk
 
+## 0.5.0
+
+### Minor Changes
+
+- 139ef8e: Add Postgrest and include it in the main sdk
+
+### Patch Changes
+
+- Updated dependencies [299869a]
+- Updated dependencies [139ef8e]
+  - @jupiter-cloud/auth@0.5.0
+  - @jupiter-cloud/postgrest@0.5.0
+  - @jupiter-cloud/core@0.5.0
+  - @jupiter-cloud/storage@0.5.0
+
 ## 0.4.1
 
 ### Patch Changes
