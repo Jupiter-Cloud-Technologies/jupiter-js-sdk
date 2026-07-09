@@ -34,7 +34,12 @@ export class Jupiter<
   protected headers: Record<string, string>
   protected settings?: ResolvedJupiterSDKOptions<SchemaName>
 
-  constructor(baseurl: string, projectId: string, options?: JupiterSDKOptions<SchemaName>) {
+  constructor(
+    baseurl: string,
+    projectId: string,
+    adminToken: string,
+    options?: JupiterSDKOptions<SchemaName>
+  ) {
     this.baseUrl = normalizeBaseUrl(baseurl)
     validateProjectId(projectId)
     this.projectId = projectId
@@ -74,7 +79,8 @@ export class Jupiter<
     this.fetch = fetchWithAuth(
       this.projectId,
       this._getAccessToken.bind(this),
-      settings.global.fetch
+      settings.global.fetch,
+      adminToken
     )
 
     if (this.accessToken) {

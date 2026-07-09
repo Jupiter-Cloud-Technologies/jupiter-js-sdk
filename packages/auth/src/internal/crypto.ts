@@ -30,7 +30,7 @@ export type AuthMFAGetAuthenticatorAssuranceLevelResponse = RequestResult<{
    * Next possible AAL level for the session. If the next level is higher
    * than the current one, the user should go through MFA.
    *
-   * @see {@link GoTrueMFAApi#challenge}
+   * @see {@link MFAApi#challenge}
    */
   nextLevel: AuthenticatorAssuranceLevels | null
 
@@ -56,7 +56,7 @@ export type AuthMFAGetAuthenticatorAssuranceLevelResponse = RequestResult<{
  * - An array of AMREntry objects (detailed format with timestamps)
  * - An array of strings (RFC-8176 compliant format)
  *
- * @see {@link GoTrueMFAApi#getAuthenticatorAssuranceLevel}.
+ * @see {@link MFAApi#getAuthenticatorAssuranceLevel}.
  */
 export interface AMREntry {
   /** Authentication method name. */
@@ -103,12 +103,12 @@ export interface UserAppMetadata {
 }
 
 /**
- * JWT Payload containing claims for Supabase authentication tokens.
+ * JWT Payload containing claims for Jupiter authentication tokens.
  *
  * Required claims (iss, aud, exp, iat, sub, role, aal, session_id) are inherited from RequiredClaims.
  * All other claims are optional as they can be customized via Custom Access Token Hooks.
  *
- * @see https://supabase.com/docs/guides/auth/jwt-fields
+ * @see Jupiter Auth JWT claims
  */
 export interface JwtPayload extends RequiredClaims {
   // Standard optional claims (can be customized via custom access token hooks)

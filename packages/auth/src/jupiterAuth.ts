@@ -43,7 +43,9 @@ import type {
   MFAVerifyTOTPParams,
   MFAVerifyPhoneParams,
   AuthMFAVerifyResponse,
-  JupiterAuthOptionsv2
+  JupiterAuthOptionsv2,
+  AdminUserAttributesParams,
+  UserUpdatePasswordParams
 } from './types'
 import type { JWK } from './types/jwk'
 import {
@@ -66,7 +68,12 @@ import {
   userNotAvailableProxy,
   validateExp
 } from './internal/helpers'
-import { _request, _sessionResponse, _sessionResponsePassword } from './internal/fetch'
+import {
+  _noResolveJsonResponse,
+  _request,
+  _sessionResponse,
+  _sessionResponsePassword
+} from './internal/fetch'
 import {
   AuthError,
   AuthImplicitGrantRedirectError,
@@ -125,7 +132,13 @@ import type {
   MFAVerifyWebauthnParamFields,
   MFAVerifyWebauthnParams,
   Prettify,
-  StrictOmit
+  StrictOmit,
+  PageParams,
+  Pagination,
+  AuthMFAAdminListFactorsParams,
+  AuthMFAAdminDeleteFactorParams,
+  AuthMFAAdminDeleteFactorResponse,
+  AuthMFAAdminListFactorsResponse
 } from './types/mfa'
 import type {
   AuthenticationCredential,
@@ -146,6 +159,7 @@ import { stringToUint8Array } from './internal/base64'
 import { memoryLocalStorageAdapter } from './internal/local-storage'
 import { polyfillGlobalThis } from './internal/polyfills'
 import JupiterAuthAdmin from './admin'
+import { validateUUID } from './internal/validation'
 
 polyfillGlobalThis() // Make "globalThis" available
 
@@ -178,7 +192,7 @@ const DEFAULT_OPTIONS: Omit<
 /**
  * Caches JWKS values for all clients created in the same environment. This is
  * especially useful for shared-memory execution environments such as Vercel's
- * Fluid Compute, AWS Lambda or Supabase's Edge Functions. Regardless of how
+ * Fluid Compute, AWS Lambda, or edge-function runtimes. Regardless of how
  * many clients are created, if they share the same storage key they will use
  * the same JWKS cache, significantly speeding up getClaims() with asymmetric
  * JWTs.
@@ -308,7 +322,7 @@ export class JupiterAuth {
   protected lockAcquireTimeout: number
   /**
    * Opt-in flags for experimental features. Defaults to an empty object.
-   * See `GoTrueClientOptions.experimental`.
+   * See `JupiterAuthOptions.experimental`.
    */
   protected experimental: ExperimentalFeatureFlags
 
@@ -333,7 +347,7 @@ export class JupiterAuth {
     }
 
     if (this.instanceID > 0 && isBrowser()) {
-      const message = `${this._logPrefix()} Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.`
+      const message = `${this._logPrefix()} Multiple JupiterAuth instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.`
       console.warn(message)
       if (this.logDebugMessages) {
         console.trace(message)
@@ -352,9 +366,8 @@ export class JupiterAuth {
     this.hasCustomAuthorizationHeader = settings.hasCustomAuthorizationHeader
     this.throwOnError = settings.throwOnError
 
-    // Always wire `lockAcquireTimeout` even on the lockless path: consumers
-    // (including supabase-js tests) read it off the client to verify option
-    // flow-through.
+    // Always wire `lockAcquireTimeout` even on the lockless path so consumers
+    // can verify option flow-through.
     this.lockAcquireTimeout = settings.lockAcquireTimeout
 
     if (!this.jwks) {
@@ -458,7 +471,7 @@ export class JupiterAuth {
 
   private _logPrefix(): string {
     return (
-      'GoTrueClient@' + `${this.storageKey}:${this.instanceID} (${''}) ${new Date().toISOString()}`
+      'JupiterAuth@' + `${this.storageKey}:${this.instanceID} (${''}) ${new Date().toISOString()}`
     )
   }
 
@@ -470,24 +483,7 @@ export class JupiterAuth {
     return this
   }
 
-  /**
-   * Initialize the auth client by loading the session from storage or
-   * detecting it from the URL after an OAuth, magic-link, or password-recovery
-   * redirect.
-   *
-   * **Most callers do not need to invoke this directly.** The client calls it
-   * automatically during construction, and to react to sign-in events (including
-   * post-redirect events) you should subscribe to `onAuthStateChange` rather
-   * than awaiting `initialize()`.
-   *
-   * You only need to call it manually when you have opted out of the automatic
-   * call by passing `skipAutoInitialize: true` — for example, in an SSR context
-   * where you need to control initialization timing. In that case, awaiting
-   * `initialize()` returns the resolved session result (or any error encountered
-   * while detecting it from the URL).
-   *
-   * @category Auth
-   */
+  /** Initializes Jupiter Auth session state from storage or redirect parameters. */
   async initialize(): Promise<InitializeResult> {
     if (this.initializePromise) {
       return await this.initializePromise
@@ -593,12 +589,7 @@ export class JupiterAuth {
     }
   }
 
-  /**
-   * Build the external provider authorization URL.
-   *
-   * This is the preferred browser entrypoint for OAuth because `/authorize`
-   * normally responds with an HTTP redirect.
-   */
+  /** Builds a Jupiter Auth provider authorization URL. */
   getAuthorizeUrl(options: AuthorizeUrlOptions): string {
     return this.createUrl('/authorize', {
       code_challenge: options.codeChallenge,
@@ -611,7 +602,7 @@ export class JupiterAuth {
     })
   }
 
-  /** Build an external provider callback URL. Mostly useful for server-side callback handlers. */
+  /** Builds a Jupiter Auth provider callback URL. */
   getExternalProviderCallbackUrl(options: Omit<OAuthCallbackForm, 'user'>): string {
     return this.createUrl('/callback', {
       code: options.code,
@@ -630,7 +621,6 @@ export class JupiterAuth {
         headers: this.headers,
         body: {
           attributes: credentials?.attributes ?? {}
-          // gotrue_meta_security: { captcha_token: credentials?.options?.captchaToken },
         },
         xform: _sessionResponse
       })
@@ -677,7 +667,6 @@ export class JupiterAuth {
           email,
           password,
           attributes: attributes ?? {},
-          // gotrue_meta_security: { captcha_token: options?.captchaToken },
           code_challenge: codeChallenge,
           code_challenge_method: codeChallengeMethod
         },
@@ -731,7 +720,6 @@ export class JupiterAuth {
           email,
           password,
           attributes: attributes ?? {},
-          // gotrue_meta_security: { captcha_token: options?.captchaToken },
           code_challenge: codeChallenge,
           code_challenge_method: codeChallengeMethod
         },
@@ -790,7 +778,6 @@ export class JupiterAuth {
           body: {
             phone,
             password
-            // gotrue_meta_security: { captcha_token: options?.captchaToken },
           },
           xform: _sessionResponsePassword
         })
@@ -926,7 +913,6 @@ export class JupiterAuth {
           id_token: token,
           access_token,
           nonce
-          // gotrue_meta_security: { captcha_token: options?.captchaToken },
         },
         xform: _sessionResponse
       })
@@ -970,7 +956,6 @@ export class JupiterAuth {
             email,
             data: attributes ?? {},
             create_user: createIfNotExists ?? true,
-            // gotrue_meta_security: { captcha_token: options?.captchaToken },
             code_challenge: codeChallenge,
             code_challenge_method: codeChallengeMethod
           },
@@ -986,7 +971,6 @@ export class JupiterAuth {
             phone,
             attributes: attributes ?? {},
             create_user: createIfNotExists ?? true,
-            // gotrue_meta_security: { captcha_token: options?.captchaToken },
             channel: 'sms'
             // channel: options?.channel ?? 'sms',
           }
@@ -1017,7 +1001,6 @@ export class JupiterAuth {
             phone,
             data: attributes ?? {},
             create_user: createIfNotExists ?? true,
-            // gotrue_meta_security: { captcha_token: options?.captchaToken },
             channel: 'sms'
             // channel: options?.channel ?? 'sms',
           }
@@ -1721,6 +1704,60 @@ export class JupiterAuth {
     return await this._updateUser(attributes, options)
   }
 
+  async updateUserPassword(attributes: UserUpdatePasswordParams): Promise<UserResponse> {
+    await this.initializePromise
+
+    if (this.lock != null) {
+      // TODO(v3): remove legacy lock path
+      return await this._acquireLock(this.lockAcquireTimeout, async () => {
+        return await this._updateUserPassword(attributes)
+      })
+    }
+
+    return await this._updateUserPassword(attributes)
+  }
+
+  protected async _updateUserPassword(attributes: UserUpdatePasswordParams): Promise<UserResponse> {
+    try {
+      return await this._useSession(async (result) => {
+        const { data: sessionData, error: sessionError } = result
+        if (sessionError) {
+          throw sessionError
+        }
+        if (!sessionData.session) {
+          throw new AuthSessionMissingError()
+        }
+
+        const session: AccessTokenResponse = sessionData.session
+        const { data, error: userError } = await _request(
+          this.fetch,
+          'PUT',
+          `${this.url}/user/password`,
+          {
+            headers: this.headers,
+            body: attributes,
+            jwt: session.access_token,
+            xform: _userResponse
+          }
+        )
+        if (userError) {
+          throw userError
+        }
+
+        session.user = data.user as PublicUser
+        await this._saveSession(session)
+        await this._notifyAllSubscribers('USER_UPDATED', session)
+        return this._returnResult({ data: { user: session.user }, error: null })
+      })
+    } catch (error) {
+      if (isAuthError(error)) {
+        return this._returnResult({ data: { user: null }, error })
+      }
+
+      throw error
+    }
+  }
+
   protected async _updateUser(
     attributes: UserAttributes,
     options: {
@@ -1972,21 +2009,21 @@ export class JupiterAuth {
       const actuallyExpiresIn = expiresAt - timeNow
       if (actuallyExpiresIn * 1000 <= AUTO_REFRESH_TICK_DURATION_MS) {
         console.warn(
-          `@supabase/gotrue-js: Session as retrieved from URL expires in ${actuallyExpiresIn}s, should have been closer to ${expiresIn}s`
+          `@jupiter-cloud/auth: Session as retrieved from URL expires in ${actuallyExpiresIn}s, should have been closer to ${expiresIn}s`
         )
       }
 
       const issuedAt = expiresAt - expiresIn
       if (timeNow - issuedAt >= 120) {
         console.warn(
-          '@supabase/gotrue-js: Session as retrieved from URL was issued over 120s ago, URL could be stale',
+          '@jupiter-cloud/auth: Session as retrieved from URL was issued over 120s ago, URL could be stale',
           issuedAt,
           expiresAt,
           timeNow
         )
       } else if (timeNow - issuedAt < 0) {
         console.warn(
-          '@supabase/gotrue-js: Session as retrieved from URL was issued in the future? Check the device clock for skew',
+          '@jupiter-cloud/auth: Session as retrieved from URL was issued in the future? Check the device clock for skew',
           issuedAt,
           expiresAt,
           timeNow
@@ -2025,7 +2062,7 @@ export class JupiterAuth {
    * Checks if the current URL contains parameters given by an implicit oauth grant flow (https://www.rfc-editor.org/rfc/rfc6749.html#section-4.2)
    *
    * If `detectSessionInUrl` is a function, it will be called with the URL and params to determine
-   * if the URL should be processed as a Supabase auth callback. This allows users to exclude
+   * if the URL should be processed as a Jupiter auth callback. This allows users to exclude
    * URLs from other OAuth providers (e.g., Facebook Login) that also return access_token in the fragment.
    */
   private _isImplicitGrantCallback(params: { [parameter: string]: string }): boolean {
@@ -2093,21 +2130,14 @@ export class JupiterAuth {
     })
   }
 
-  /**
-   * Removes a logged-in session.
-   * @param jwt A valid, logged-in JWT.
-   * @param scope The logout sope.
-   *
-   * @category Auth
-   * @subcategory Auth Admin
-   */
+  /** Revokes an authenticated session through the admin API. */
   async adminSignOut(
     jwt: string,
     scope: SignOutScope = SIGN_OUT_SCOPES[0]
   ): Promise<{ data: null; error: AuthError | null }> {
     if (SIGN_OUT_SCOPES.indexOf(scope) < 0) {
       throw new Error(
-        `@supabase/auth-js: Parameter scope must be one of ${SIGN_OUT_SCOPES.join(', ')}`
+        `@jupiter-cloud/auth: Parameter scope must be one of ${SIGN_OUT_SCOPES.join(', ')}`
       )
     }
 
@@ -2127,33 +2157,201 @@ export class JupiterAuth {
     }
   }
 
-  /**
-   * Receive a notification every time an auth event happens.
-   * Safe to use without an async function as callback.
-   *
-   * @param callback A callback function to be invoked when an auth event happens.
-   */
+  async adminInviteUser(
+    email: string,
+    attributes?: object,
+    options: {
+      redirectTo?: string
+    } = {}
+  ): Promise<UserResponse> {
+    try {
+      return await _request(this.fetch, 'POST', `${this.url}/admin/invite`, {
+        body: { email, attributes: attributes },
+        headers: this.headers,
+        redirectTo: options.redirectTo,
+        xform: _userResponse
+      })
+    } catch (error) {
+      if (isAuthError(error)) {
+        return { data: { user: null }, error }
+      }
+
+      throw error
+    }
+  }
+
+  async adminCreateUser(attributes: AdminUserAttributesParams): Promise<UserResponse> {
+    try {
+      return await _request(this.fetch, 'POST', `${this.url}/admin/users`, {
+        body: attributes,
+        headers: this.headers,
+        xform: _userResponse
+      })
+    } catch (error) {
+      if (isAuthError(error)) {
+        return { data: { user: null }, error }
+      }
+
+      throw error
+    }
+  }
+
+  async adminListUsers(
+    params?: PageParams
+  ): Promise<
+    | { data: { users: PublicUser[]; aud: string } & Pagination; error: null }
+    | { data: { users: [] }; error: AuthError }
+  > {
+    try {
+      const pagination: Pagination = { nextPage: null, lastPage: 0, total: 0 }
+      const response = await _request(this.fetch, 'GET', `${this.url}/admin/users`, {
+        headers: this.headers,
+        noResolveJson: true,
+        query: {
+          page: params?.page?.toString() ?? '',
+          per_page: params?.perPage?.toString() ?? ''
+        },
+        xform: _noResolveJsonResponse
+      })
+      if (response.error) throw response.error
+
+      const users = await response.json()
+      const total = response.headers.get('x-total-count') ?? 0
+      const links = response.headers.get('link')?.split(',') ?? []
+      if (links.length > 0) {
+        links.forEach((link: string) => {
+          const page = parseInt(link.split(';')[0].split('=')[1].substring(0, 1))
+          const rel = JSON.parse(link.split(';')[1].split('=')[1])
+          pagination[`${rel}Page`] = page
+        })
+
+        pagination.total = parseInt(total)
+      }
+      return { data: { ...users, ...pagination }, error: null }
+    } catch (error) {
+      if (isAuthError(error)) {
+        return { data: { users: [] }, error }
+      }
+      throw error
+    }
+  }
+
+  async adminGetUser(uid: string): Promise<UserResponse> {
+    validateUUID(uid)
+
+    try {
+      return await _request(this.fetch, 'GET', `${this.url}/admin/users/${uid}`, {
+        headers: this.headers,
+        xform: _userResponse
+      })
+    } catch (error) {
+      if (isAuthError(error)) {
+        return { data: { user: null }, error }
+      }
+
+      throw error
+    }
+  }
+
+  async adminUpdateUser(uid: string, attributes: AdminUserAttributesParams): Promise<UserResponse> {
+    validateUUID(uid)
+
+    try {
+      return await _request(this.fetch, 'PUT', `${this.url}/admin/users/${uid}`, {
+        body: attributes,
+        headers: this.headers,
+        xform: _userResponse
+      })
+    } catch (error) {
+      if (isAuthError(error)) {
+        return { data: { user: null }, error }
+      }
+
+      throw error
+    }
+  }
+
+  async adminDeleteUser(id: string, shouldSoftDelete = false): Promise<UserResponse> {
+    validateUUID(id)
+
+    try {
+      return await _request(this.fetch, 'DELETE', `${this.url}/admin/users/${id}`, {
+        headers: this.headers,
+        body: {
+          should_soft_delete: shouldSoftDelete
+        },
+        xform: _userResponse
+      })
+    } catch (error) {
+      if (isAuthError(error)) {
+        return { data: { user: null }, error }
+      }
+
+      throw error
+    }
+  }
+
+  async adminListFactors(
+    params: AuthMFAAdminListFactorsParams
+  ): Promise<AuthMFAAdminListFactorsResponse> {
+    validateUUID(params.userId)
+
+    try {
+      const { data, error } = await _request(
+        this.fetch,
+        'GET',
+        `${this.url}/admin/users/${params.userId}/factors`,
+        {
+          headers: this.headers,
+          xform: (factors: any) => {
+            return { data: { factors }, error: null }
+          }
+        }
+      )
+      return { data, error }
+    } catch (error) {
+      if (isAuthError(error)) {
+        return { data: null, error }
+      }
+
+      throw error
+    }
+  }
+
+  async adminDeleteFactor(
+    params: AuthMFAAdminDeleteFactorParams
+  ): Promise<AuthMFAAdminDeleteFactorResponse> {
+    validateUUID(params.userId)
+    validateUUID(params.id)
+
+    try {
+      const data = await _request(
+        this.fetch,
+        'DELETE',
+        `${this.url}/admin/users/${params.userId}/factors/${params.id}`,
+        {
+          headers: this.headers
+        }
+      )
+
+      return { data, error: null }
+    } catch (error) {
+      if (isAuthError(error)) {
+        return { data: null, error }
+      }
+
+      throw error
+    }
+  }
+
+  /** Subscribes to Jupiter Auth state changes. */
   onAuthStateChange(
     callback: (event: AuthChangeEvent, session: AccessTokenResponse | null) => void
   ): {
     data: { subscription: Subscription }
   }
 
-  /**
-   * Receive a notification every time an auth event happens. Common reentry
-   * patterns (`getUser`, `setSession`, reading the session from inside a
-   * handler) complete normally. One hazard remains: calling `refreshSession`
-   * (or anything that routes through `_callRefreshToken`) from inside a
-   * `TOKEN_REFRESHED` handler. `refreshingDeferred` resolves only after
-   * `_notifyAllSubscribers` returns, so the inner refresh dedupes onto the
-   * outer's unresolved promise and the two wait on each other.
-   *
-   * @param callback A callback function to be invoked when an auth event happens.
-   *
-   * @deprecated Async callbacks can deadlock when they trigger a nested
-   * refresh from a `TOKEN_REFRESHED` event. Prefer the sync overload, or move
-   * refresh-triggering work outside the callback.
-   */
+  /** Subscribes with an async callback; avoid nested token refresh from TOKEN_REFRESHED handlers. */
   onAuthStateChange(
     callback: (event: AuthChangeEvent, session: AccessTokenResponse | null) => Promise<void>
   ): {
@@ -2239,44 +2437,13 @@ export class JupiterAuth {
     }
   }
 
-  /**
-   * Links an oauth identity to an existing user.
-   * This method supports the PKCE flow.
-   */
+  /** Links an OAuth identity to the current Jupiter Auth user. */
   async linkIdentity(credentials: SignInWithOAuthCredentials): Promise<OAuthResponse>
 
-  /**
-   * Links an OIDC identity to an existing user.
-   */
+  /** Links an OIDC identity to the current Jupiter Auth user. */
   async linkIdentity(credentials: SignInWithIdTokenCredentials): Promise<AuthTokenResponse>
 
-  /**  *
-   * @category Auth
-   *
-   * @remarks
-   * - The **Enable Manual Linking** option must be enabled from your [project's authentication settings](/dashboard/project/_/auth/providers).
-   * - The user needs to be signed in to call `linkIdentity()`.
-   * - If the candidate identity is already linked to the existing user or another user, `linkIdentity()` will fail.
-   * - If `linkIdentity` is run in the browser, the user is automatically redirected to the returned URL. On the server, you should handle the redirect.
-   *
-   * @example Link an identity to a user
-   * ```js
-   * const { data, error } = await supabase.auth.linkIdentity({
-   *   provider: 'github'
-   * })
-   * ```
-   *
-   * @exampleResponse Link an identity to a user
-   * ```json
-   * {
-   *   data: {
-   *     provider: 'github',
-   *     url: <PROVIDER_URL_TO_REDIRECT_TO>
-   *   },
-   *   error: null
-   * }
-   * ```
-   */
+  /** Links another identity to the currently signed-in Jupiter Auth user. */
   async linkIdentity(credentials: any): Promise<any> {
     if ('token' in credentials) {
       return this.linkIdentityIdToken(credentials)
@@ -3198,12 +3365,7 @@ export class JupiterAuth {
     }
   }
 
-  /**
-   * Generates the relevant login URL for a third-party provider.
-   * @param options.redirectTo A URL or mobile address to send the user to after they are confirmed.
-   * @param options.scopes A space-separated list of scopes granted to the OAuth application.
-   * @param options.queryParams An object of key-value pairs containing query parameters granted to the OAuth application.
-   */
+  /** Builds the provider login URL used by Jupiter Auth OAuth flows. */
   private async _getUrlForProvider(
     url: string,
     provider: Provider,
@@ -3240,6 +3402,7 @@ export class JupiterAuth {
     if (options?.skipBrowserRedirect) {
       urlParams.push(`skip_http_redirect=${options.skipBrowserRedirect}`)
     }
+    urlParams.push(`project_id=${encodeURIComponent(this.projectId)}`)
 
     return `${url}?${urlParams.join('&')}`
   }
@@ -3265,9 +3428,6 @@ export class JupiterAuth {
     }
   }
 
-  /**
-   * {@see GoTrueMFAApi#enroll}
-   */
   private async _enroll(params: MFAEnrollTOTPParams): Promise<AuthMFAEnrollTOTPResponse>
   private async _enroll(params: MFAEnrollPhoneParams): Promise<AuthMFAEnrollPhoneResponse>
   private async _enroll(params: MFAEnrollWebauthnParams): Promise<AuthMFAEnrollWebauthnResponse>
@@ -3312,8 +3472,6 @@ export class JupiterAuth {
     }
   }
 
-  /**
-   */
   private async _verify(params: MFAVerifyTOTPParams): Promise<AuthMFAVerifyResponse>
   private async _verify(params: MFAVerifyPhoneParams): Promise<AuthMFAVerifyResponse>
   private async _verify<T extends 'create' | 'request'>(
@@ -3400,8 +3558,6 @@ export class JupiterAuth {
     return run()
   }
 
-  /**
-   */
   private async _challenge(
     params: MFAChallengeTOTPParams
   ): Promise<Prettify<AuthMFAChallengeTOTPResponse>>
@@ -3502,8 +3658,6 @@ export class JupiterAuth {
     return run()
   }
 
-  /**
-   */
   private async _challengeAndVerify(
     params: MFAChallengeAndVerifyParams
   ): Promise<AuthMFAVerifyResponse> {
@@ -3521,8 +3675,6 @@ export class JupiterAuth {
     })
   }
 
-  /**
-   */
   private async _listFactors(): Promise<AuthMFAListFactorsResponse> {
     const {
       data: { user },
@@ -3553,8 +3705,6 @@ export class JupiterAuth {
     }
   }
 
-  /**
-   */
   private async _getAuthenticatorAssuranceLevel(
     jwt?: string
   ): Promise<AuthMFAGetAuthenticatorAssuranceLevelResponse> {
