@@ -36,7 +36,7 @@ const writeSyncedFile = (filePath, content) => {
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 const getVersionSectionBody = (changelog, version) => {
-  const pattern = new RegExp(`(?:^|\\n)## ${escapeRegExp(version)}\\n+([\\s\\S]*?)(?=\\n## |$)`)
+  const pattern = new RegExp(`(?:^|\\n)## ${escapeRegExp(version)}\\n([\\s\\S]*?)(?=\\n## |$)`)
   const match = changelog.match(pattern)
 
   return match ? match[1].trim() : undefined
@@ -121,8 +121,12 @@ const buildRootChangelog = () => {
     const packageChangelog = readFileSync(changelogPath, 'utf8')
     const packageSectionBody = getVersionSectionBody(packageChangelog, rootPackageJson.version)
 
-    if (!packageSectionBody) {
+    if (packageSectionBody === undefined) {
       staleFiles.push(`${path.relative(rootDir, changelogPath)}#${rootPackageJson.version}`)
+      continue
+    }
+
+    if (packageSectionBody === '') {
       continue
     }
 
