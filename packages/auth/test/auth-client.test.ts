@@ -127,6 +127,10 @@ describe('JupiterAuth', () => {
       }
     })
 
+    if (url === null) {
+      throw new Error('Expected social provider URL')
+    }
+
     expect(Object.fromEntries(new URL(url).searchParams)).toEqual({
       project_id: 'project-1',
       provider: 'github'
