@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@jupiter-cloud/core": "workspace:*",
-    "@supabase/postgrest-js": "2.79.0"
+    "@supabase/postgrest-js": "2.110.7"
   },
   "engines": {
     "node": ">=20"
