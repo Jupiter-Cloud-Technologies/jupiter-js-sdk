@@ -7,4 +7,4 @@
 '@jupiter-cloud/storage': minor
 ---
 
-standardize storage params
+i
