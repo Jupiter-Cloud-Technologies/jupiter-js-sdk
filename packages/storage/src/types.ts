@@ -294,7 +294,46 @@ export type UpdateBucketRequest = Partial<Omit<CreateBucketRequest, 'name' | 'lo
 /**
  * Ergonomic SDK options for updating a bucket.
  */
-export type UpdateBucketOptions = Partial<Omit<CreateBucketOptions, 'location'>>
+export type UpdateBucketOptions = Partial<Omit<CreateBucketOptions, 'location' | 'name'>>
+
+/** Parameters for getting a bucket. */
+export type GetBucketParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+}
+
+/** Parameters for updating a bucket. */
+export type UpdateBucketParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+} & UpdateBucketOptions
+
+/** Parameters for deleting a bucket. */
+export type DeleteBucketParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+
+  /** Delete active objects and multipart uploads before deleting the bucket. */
+  forceFlush?: boolean
+
+  /** Abort signal for cancelling the delete request. */
+  signal?: AbortSignal
+}
+
+/** Parameters for flushing a bucket. */
+export type FlushBucketParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+
+  /** Abort signal for cancelling the flush request. */
+  signal?: AbortSignal
+}
+
+/** Parameters for counting objects in a bucket. */
+export type CountObjectsParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+}
 
 /**
  * Request body for deleting a bucket.
@@ -370,6 +409,12 @@ export type ListObjectsOptions = {
   limit?: PageLimit
 }
 
+/** Parameters for listing objects in a bucket. */
+export type ListObjectsParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+} & ListObjectsOptions
+
 /**
  * Upload body accepted by direct object uploads.
  *
@@ -403,11 +448,44 @@ export type UploadObjectOptions = {
   signal?: AbortSignal
 }
 
+/** Parameters for uploading object bytes directly. */
+export type UploadObjectParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+
+  /** Object key inside the bucket. */
+  key: ObjectKey
+
+  /** Object bytes. */
+  body: UploadBody
+} & UploadObjectOptions
+
 /**
  * Options for downloading object bytes.
  */
 export type DownloadObjectOptions = {
   /** Abort signal for cancelling the download request. */
+  signal?: AbortSignal
+}
+
+/** Parameters for downloading object bytes. */
+export type DownloadObjectParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+
+  /** Object key inside the bucket. */
+  key: ObjectKey
+} & DownloadObjectOptions
+
+/** Parameters for getting object metadata. */
+export type GetObjectMetadataParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+
+  /** Object key inside the bucket. */
+  key: ObjectKey
+
+  /** Abort signal for cancelling the metadata request. */
   signal?: AbortSignal
 }
 
@@ -429,6 +507,15 @@ export type UpdateObjectOptions = {
   /** Abort signal for cancelling the update request. */
   signal?: AbortSignal
 }
+
+/** Parameters for updating object attributes. */
+export type UpdateObjectAttributesParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+
+  /** Object key inside the bucket. */
+  key: ObjectKey
+} & UpdateObjectOptions
 
 /**
  * Request body for copying an object to a destination path.
@@ -476,6 +563,15 @@ export type CopyObjectOptions = {
   signal?: AbortSignal
 }
 
+/** Parameters for copying an object. */
+export type CopyObjectParams = {
+  /** Destination bucket name. */
+  destinationBucketName: BucketName
+
+  /** Destination object key. */
+  destinationKey: ObjectKey
+} & CopyObjectOptions
+
 /**
  * Response returned after copying an object.
  */
@@ -503,6 +599,24 @@ export type DeleteObjectsOptions = {
   /** Abort signal for cancelling the delete request. */
   signal?: AbortSignal
 }
+
+/** Parameters for deleting one object. */
+export type DeleteObjectParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+
+  /** Object key inside the bucket. */
+  key: ObjectKey
+
+  /** Abort signal for cancelling the delete request. */
+  signal?: AbortSignal
+}
+
+/** Parameters for deleting multiple objects. */
+export type DeleteObjectsParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+} & DeleteObjectsOptions
 
 /**
  * Request body for deleting multiple objects.
@@ -739,6 +853,12 @@ export type ListMultipartUploadsOptions = {
   limit?: PageLimit
 }
 
+/** Parameters for listing active multipart uploads. */
+export type ListMultipartUploadsParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+} & ListMultipartUploadsOptions
+
 /**
  * Options for starting a multipart upload.
  */
@@ -758,6 +878,12 @@ export type StartMultipartUploadOptions = {
   /** Abort signal for cancelling the start request. */
   signal?: AbortSignal
 }
+
+/** Parameters for starting a multipart upload. */
+export type StartMultipartUploadParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+} & StartMultipartUploadOptions
 
 /**
  * Response returned after starting a multipart upload.
@@ -807,6 +933,39 @@ export type UploadMultipartPartOptions = {
   signal?: AbortSignal
 }
 
+/** Parameters for getting a multipart upload and its parts. */
+export type GetMultipartUploadParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+
+  /** Multipart upload identifier. */
+  uploadId: UploadId
+} & ListMultipartPartsOptions
+
+/** Parameters for aborting a multipart upload. */
+export type AbortMultipartUploadParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+
+  /** Multipart upload identifier. */
+  uploadId: UploadId
+
+  /** Abort signal for cancelling the abort request. */
+  signal?: AbortSignal
+}
+
+/** Parameters for uploading one multipart part. */
+export type UploadMultipartPartParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+
+  /** Multipart upload identifier. */
+  uploadId: UploadId
+
+  /** Part bytes. */
+  body: UploadBody
+} & UploadMultipartPartOptions
+
 /**
  * Options for copying an existing object as a multipart part.
  */
@@ -820,6 +979,15 @@ export type CopyMultipartPartOptions = {
   /** Abort signal for cancelling the copy request. */
   signal?: AbortSignal
 }
+
+/** Parameters for copying an existing object as a multipart part. */
+export type CopyMultipartPartParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+
+  /** Multipart upload identifier. */
+  uploadId: UploadId
+} & CopyMultipartPartOptions
 
 /**
  * Response returned after uploading or copying a multipart part.
@@ -847,6 +1015,27 @@ export type ListMultipartPartsOptions = {
 
   /** Page size. Values are clamped by the API to `1` through `1000`. */
   limit?: PageLimit
+}
+
+/** Parameters for listing multipart upload parts. */
+export type ListMultipartUploadPartsParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+
+  /** Multipart upload identifier. */
+  uploadId: UploadId
+} & ListMultipartPartsOptions
+
+/** Parameters for getting one multipart upload part. */
+export type GetMultipartUploadPartParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+
+  /** Multipart upload identifier. */
+  uploadId: UploadId
+
+  /** Multipart part number. */
+  partNumber: PartNumber
 }
 
 /**
@@ -928,6 +1117,15 @@ export type CompleteMultipartUploadOptions = {
   /** Abort signal for cancelling the complete request. */
   signal?: AbortSignal
 }
+
+/** Parameters for completing a multipart upload. */
+export type CompleteMultipartUploadParams = {
+  /** Bucket name. */
+  bucketName: BucketName
+
+  /** Multipart upload identifier. */
+  uploadId: UploadId
+} & CompleteMultipartUploadOptions
 
 /**
  * Response returned after completing a multipart upload.

@@ -7,47 +7,53 @@ import {
 } from '@jupiter-cloud/core'
 import type {
   AbortMultipartUploadResponse,
+  AbortMultipartUploadParams,
   Bucket,
-  BucketName,
   BulkDeleteObjectsResponse,
-  CompleteMultipartUploadOptions,
+  CompleteMultipartUploadParams,
   CompleteMultipartUploadResponse,
-  CopyMultipartPartOptions,
-  CopyObjectOptions,
+  CopyMultipartPartParams,
+  CopyObjectParams,
   CopyObjectResponse,
+  CountObjectsParams,
   CountObjectsResponse,
   CreateBucketOptions,
   CreateBucketRequest,
+  DeleteBucketParams,
   DeleteBucketResponse,
+  DeleteObjectParams,
   DeleteObjectResponse,
-  DeleteObjectsOptions,
-  DownloadObjectOptions,
+  DeleteObjectsParams,
+  DownloadObjectParams,
   DownloadObjectResponse,
+  FlushBucketParams,
   FlushBucketResponse,
+  GetBucketParams,
+  GetMultipartUploadParams,
+  GetMultipartUploadPartParams,
+  GetObjectMetadataParams,
   GetMultipartPartResponse,
   GetMultipartUploadResponse,
   ListBucketsResponse,
-  ListMultipartPartsOptions,
+  ListMultipartUploadPartsParams,
+  ListMultipartUploadsParams,
   ListMultipartPartsResponse,
-  ListMultipartUploadsOptions,
   ListMultipartUploadsResponse,
-  ListObjectsOptions,
+  ListObjectsParams,
   ListObjectsResponse,
   MultipartPartUploadResponse,
   MultipartStartResponse,
-  ObjectKey,
-  PartNumber,
-  StartMultipartUploadOptions,
+  StartMultipartUploadParams,
   JupiterStorageOptions,
   StorageResult,
+  UpdateBucketParams,
   UpdateBucketOptions,
   UpdateBucketRequest,
+  UpdateObjectAttributesParams,
   UpdateObjectAttributesResponse,
-  UpdateObjectOptions,
   UploadBody,
-  UploadId,
-  UploadMultipartPartOptions,
-  UploadObjectOptions,
+  UploadMultipartPartParams,
+  UploadObjectParams,
   UploadObjectResponse
 } from './types'
 
@@ -96,7 +102,7 @@ export class JupiterStorage {
   /**
    * Get one bucket by name.
    */
-  getBucket(bucketName: BucketName): StorageResult<Bucket> {
+  getBucket({ bucketName }: GetBucketParams): StorageResult<Bucket> {
     return this.request<Bucket>(`/buckets/${encodePathSegment(bucketName)}`)
   }
 
@@ -113,7 +119,9 @@ export class JupiterStorage {
   /**
    * Edit bucket settings.
    */
-  editBucket(bucketName: BucketName, options: UpdateBucketOptions): StorageResult<Bucket> {
+  editBucket(params: UpdateBucketParams): StorageResult<Bucket> {
+    const { bucketName, ...options } = params
+
     return this.request<Bucket>(`/buckets/${encodePathSegment(bucketName)}`, {
       body: toUpdateBucketRequest(options),
       method: 'PATCH'
@@ -123,29 +131,30 @@ export class JupiterStorage {
   /**
    * Alias for `editBucket`.
    */
-  updateBucket(bucketName: BucketName, options: UpdateBucketOptions): StorageResult<Bucket> {
-    return this.editBucket(bucketName, options)
+  updateBucket(params: UpdateBucketParams): StorageResult<Bucket> {
+    return this.editBucket(params)
   }
 
   /**
    * Delete a bucket.
    */
-  deleteBucket(
-    bucketName: BucketName,
-    options: { forceFlush?: boolean; signal?: AbortSignal } = {}
-  ): StorageResult<DeleteBucketResponse> {
+  deleteBucket({
+    bucketName,
+    forceFlush,
+    signal
+  }: DeleteBucketParams): StorageResult<DeleteBucketResponse> {
     const requestOptions: RequestOptions = {
       method: 'DELETE'
     }
 
-    if (options.forceFlush !== undefined) {
+    if (forceFlush !== undefined) {
       requestOptions.body = {
-        force_flush: options.forceFlush
+        force_flush: forceFlush
       }
     }
 
-    if (options.signal !== undefined) {
-      requestOptions.signal = options.signal
+    if (signal !== undefined) {
+      requestOptions.signal = signal
     }
 
     return this.request<DeleteBucketResponse>(
@@ -157,7 +166,7 @@ export class JupiterStorage {
   /**
    * Delete all objects and active multipart uploads in a bucket.
    */
-  flushBucket(bucketName: BucketName, signal?: AbortSignal): StorageResult<FlushBucketResponse> {
+  flushBucket({ bucketName, signal }: FlushBucketParams): StorageResult<FlushBucketResponse> {
     const options: RequestOptions = {
       method: 'DELETE'
     }
@@ -175,7 +184,7 @@ export class JupiterStorage {
   /**
    * Count objects in a bucket.
    */
-  countObjects(bucketName: BucketName): StorageResult<CountObjectsResponse> {
+  countObjects({ bucketName }: CountObjectsParams): StorageResult<CountObjectsResponse> {
     return this.request<CountObjectsResponse>(
       `/buckets/${encodePathSegment(bucketName)}/objects/count`
     )
@@ -184,15 +193,17 @@ export class JupiterStorage {
   /**
    * List objects in a bucket.
    */
-  listObjects(
-    bucketName: BucketName,
-    options: ListObjectsOptions = {}
-  ): StorageResult<ListObjectsResponse> {
+  listObjects({
+    bucketName,
+    cursor,
+    limit,
+    prefix
+  }: ListObjectsParams): StorageResult<ListObjectsResponse> {
     return this.request<ListObjectsResponse>(`/buckets/${encodePathSegment(bucketName)}/objects`, {
       query: {
-        cursor: options.cursor,
-        limit: options.limit,
-        prefix: options.prefix
+        cursor,
+        limit,
+        prefix
       }
     })
   }
@@ -200,16 +211,14 @@ export class JupiterStorage {
   /**
    * Upload object bytes directly.
    */
-  uploadObject(
-    bucketName: BucketName,
-    key: ObjectKey,
-    body: UploadBody,
-    options: UploadObjectOptions = {}
-  ): StorageResult<UploadObjectResponse> {
-    assertSupportedUploadBody(body)
-    const contentLength = options.contentLength ?? inferBodyLength(body)
+  uploadObject(params: UploadObjectParams): StorageResult<UploadObjectResponse> {
+    const { bucketName, key, body, cacheControl, contentLength, contentType, metadata, signal } =
+      params
 
-    if (contentLength === undefined) {
+    assertSupportedUploadBody(body)
+    const inferredContentLength = contentLength ?? inferBodyLength(body)
+
+    if (inferredContentLength === undefined) {
       throw new TypeError(
         'contentLength is required when uploading a body whose size cannot be inferred.'
       )
@@ -219,16 +228,14 @@ export class JupiterStorage {
       {
         body,
         headers: {
-          'cache-control': options.cacheControl,
-          'content-length': String(contentLength),
-          'content-type': options.contentType,
-          'X-Jupiter-Object-Metadata': options.metadata
-            ? encodeMetadataHeader(options.metadata)
-            : undefined
+          'cache-control': cacheControl,
+          'content-length': String(inferredContentLength),
+          'content-type': contentType,
+          'X-Jupiter-Object-Metadata': metadata ? encodeMetadataHeader(metadata) : undefined
         },
         method: 'PUT'
       },
-      options.signal
+      signal
     )
 
     return this.request<UploadObjectResponse>(
@@ -240,15 +247,15 @@ export class JupiterStorage {
   /**
    * Download object bytes.
    */
-  downloadObject(
-    bucketName: BucketName,
-    key: ObjectKey,
-    options: DownloadObjectOptions = {}
-  ): StorageResult<DownloadObjectResponse> {
+  downloadObject({
+    bucketName,
+    key,
+    signal
+  }: DownloadObjectParams): StorageResult<DownloadObjectResponse> {
     const requestOptions: RequestOptions = {}
 
-    if (options.signal !== undefined) {
-      requestOptions.signal = options.signal
+    if (signal !== undefined) {
+      requestOptions.signal = signal
     }
 
     return this.request<Blob>(
@@ -293,11 +300,11 @@ export class JupiterStorage {
   /**
    * Get object metadata without downloading bytes.
    */
-  getObjectMetadata(
-    bucketName: BucketName,
-    key: ObjectKey,
-    signal?: AbortSignal
-  ): StorageResult<UploadObjectResponse['object']> {
+  getObjectMetadata({
+    bucketName,
+    key,
+    signal
+  }: GetObjectMetadataParams): StorageResult<UploadObjectResponse['object']> {
     const options: RequestOptions = {}
 
     if (signal !== undefined) {
@@ -314,18 +321,18 @@ export class JupiterStorage {
    * Edit object attributes.
    */
   editObjectAttributes(
-    bucketName: BucketName,
-    key: ObjectKey,
-    options: UpdateObjectOptions
+    params: UpdateObjectAttributesParams
   ): StorageResult<UpdateObjectAttributesResponse> {
+    const { bucketName, key, attributes, signal } = params
+
     const requestOptions = withSignal(
       {
         body: {
-          attributes: options.attributes
+          attributes
         },
         method: 'PATCH'
       },
-      options.signal
+      signal
     )
 
     return this.request<UpdateObjectAttributesResponse>(
@@ -338,21 +345,19 @@ export class JupiterStorage {
    * Alias for `editObjectAttributes`.
    */
   updateObjectAttributes(
-    bucketName: BucketName,
-    key: ObjectKey,
-    options: UpdateObjectOptions
+    params: UpdateObjectAttributesParams
   ): StorageResult<UpdateObjectAttributesResponse> {
-    return this.editObjectAttributes(bucketName, key, options)
+    return this.editObjectAttributes(params)
   }
 
   /**
    * Delete one object.
    */
-  deleteObject(
-    bucketName: BucketName,
-    key: ObjectKey,
-    signal?: AbortSignal
-  ): StorageResult<DeleteObjectResponse> {
+  deleteObject({
+    bucketName,
+    key,
+    signal
+  }: DeleteObjectParams): StorageResult<DeleteObjectResponse> {
     const options: RequestOptions = {
       method: 'DELETE'
     }
@@ -370,16 +375,17 @@ export class JupiterStorage {
   /**
    * Delete multiple objects.
    */
-  deleteObjects(
-    bucketName: BucketName,
-    options: DeleteObjectsOptions
-  ): StorageResult<BulkDeleteObjectsResponse> {
+  deleteObjects({
+    bucketName,
+    keys,
+    signal
+  }: DeleteObjectsParams): StorageResult<BulkDeleteObjectsResponse> {
     const requestOptions = withSignal(
       {
-        body: options.keys,
+        body: keys,
         method: 'DELETE'
       },
-      options.signal
+      signal
     )
 
     return this.request<BulkDeleteObjectsResponse>(
@@ -391,23 +397,30 @@ export class JupiterStorage {
   /**
    * Copy an object into a destination bucket/key.
    */
-  copyObject(
-    destinationBucketName: BucketName,
-    destinationKey: ObjectKey,
-    options: CopyObjectOptions
-  ): StorageResult<CopyObjectResponse> {
+  copyObject(params: CopyObjectParams): StorageResult<CopyObjectResponse> {
+    const {
+      cacheControl,
+      contentType,
+      destinationBucketName,
+      destinationKey,
+      metadata,
+      originBucket,
+      originKey,
+      signal
+    } = params
+
     const requestOptions = withSignal(
       {
         body: {
-          cacheControl: options.cacheControl,
-          contentType: options.contentType,
-          objectMetadata: options.metadata,
-          originBucket: options.originBucket,
-          originKey: options.originKey
+          cacheControl,
+          contentType,
+          objectMetadata: metadata,
+          originBucket,
+          originKey
         },
         method: 'PUT'
       },
-      options.signal
+      signal
     )
 
     return this.request<CopyObjectResponse>(
@@ -421,16 +434,17 @@ export class JupiterStorage {
   /**
    * List active multipart uploads in a bucket.
    */
-  listMultipartUploads(
-    bucketName: BucketName,
-    options: ListMultipartUploadsOptions = {}
-  ): StorageResult<ListMultipartUploadsResponse> {
+  listMultipartUploads({
+    bucketName,
+    cursor,
+    limit
+  }: ListMultipartUploadsParams): StorageResult<ListMultipartUploadsResponse> {
     return this.request<ListMultipartUploadsResponse>(
       `/buckets/${encodePathSegment(bucketName)}/multipart`,
       {
         query: {
-          cursor: options.cursor,
-          limit: options.limit
+          cursor,
+          limit
         }
       }
     )
@@ -439,25 +453,22 @@ export class JupiterStorage {
   /**
    * Start a multipart upload.
    */
-  startMultipartUpload(
-    bucketName: BucketName,
-    options: StartMultipartUploadOptions
-  ): StorageResult<MultipartStartResponse> {
+  startMultipartUpload(params: StartMultipartUploadParams): StorageResult<MultipartStartResponse> {
+    const { bucketName, cacheControl, contentType, key, metadata, signal } = params
+
     const requestOptions = withSignal(
       {
         headers: {
-          'cache-control': options.cacheControl,
-          'content-type': options.contentType,
-          'X-Jupiter-Object-Metadata': options.metadata
-            ? encodeMetadataHeader(options.metadata)
-            : undefined
+          'cache-control': cacheControl,
+          'content-type': contentType,
+          'X-Jupiter-Object-Metadata': metadata ? encodeMetadataHeader(metadata) : undefined
         },
         method: 'POST',
         query: {
-          key: options.key
+          key
         }
       },
-      options.signal
+      signal
     )
 
     return this.request<MultipartStartResponse>(
@@ -469,17 +480,18 @@ export class JupiterStorage {
   /**
    * Get a multipart upload and a page of its parts.
    */
-  getMultipartUpload(
-    bucketName: BucketName,
-    uploadId: UploadId,
-    options: ListMultipartPartsOptions = {}
-  ): StorageResult<GetMultipartUploadResponse> {
+  getMultipartUpload({
+    bucketName,
+    cursor,
+    limit,
+    uploadId
+  }: GetMultipartUploadParams): StorageResult<GetMultipartUploadResponse> {
     return this.request<GetMultipartUploadResponse>(
       `/buckets/${encodePathSegment(bucketName)}/multipart/upload/${encodePathSegment(uploadId)}`,
       {
         query: {
-          cursor: options.cursor,
-          limit: options.limit
+          cursor,
+          limit
         }
       }
     )
@@ -488,11 +500,11 @@ export class JupiterStorage {
   /**
    * Abort a multipart upload.
    */
-  abortMultipartUpload(
-    bucketName: BucketName,
-    uploadId: UploadId,
-    signal?: AbortSignal
-  ): StorageResult<AbortMultipartUploadResponse> {
+  abortMultipartUpload({
+    bucketName,
+    signal,
+    uploadId
+  }: AbortMultipartUploadParams): StorageResult<AbortMultipartUploadResponse> {
     const options: RequestOptions = {
       method: 'DELETE'
     }
@@ -511,23 +523,22 @@ export class JupiterStorage {
    * Upload bytes for one multipart part.
    */
   uploadMultipartPart(
-    bucketName: BucketName,
-    uploadId: UploadId,
-    body: UploadBody,
-    options: UploadMultipartPartOptions
+    params: UploadMultipartPartParams
   ): StorageResult<MultipartPartUploadResponse> {
+    const { body, bucketName, contentLength, partNumber, signal, uploadId } = params
+
     assertSupportedUploadBody(body)
 
     const requestOptions = withSignal(
       {
         body,
         headers: {
-          'content-length': String(options.contentLength),
-          'part-number': String(options.partNumber)
+          'content-length': String(contentLength),
+          'part-number': String(partNumber)
         },
         method: 'POST'
       },
-      options.signal
+      signal
     )
 
     return this.request<MultipartPartUploadResponse>(
@@ -541,25 +552,23 @@ export class JupiterStorage {
   /**
    * Copy an existing object in the same bucket as one multipart part.
    */
-  copyMultipartPart(
-    bucketName: BucketName,
-    uploadId: UploadId,
-    options: CopyMultipartPartOptions
-  ): StorageResult<MultipartPartUploadResponse> {
+  copyMultipartPart(params: CopyMultipartPartParams): StorageResult<MultipartPartUploadResponse> {
+    const { bucketName, key, partNumber, signal, uploadId } = params
+
     const requestOptions = withSignal(
       {
         headers: {
-          'part-number': String(options.partNumber)
+          'part-number': String(partNumber)
         },
         method: 'POST'
       },
-      options.signal
+      signal
     )
 
     return this.request<MultipartPartUploadResponse>(
       `/buckets/${encodePathSegment(bucketName)}/multipart/upload/${encodePathSegment(
         uploadId
-      )}/part/copy/${encodePathSegment(options.key)}`,
+      )}/part/copy/${encodePathSegment(key)}`,
       requestOptions
     )
   }
@@ -567,19 +576,20 @@ export class JupiterStorage {
   /**
    * List uploaded parts for a multipart upload.
    */
-  listMultipartUploadParts(
-    bucketName: BucketName,
-    uploadId: UploadId,
-    options: ListMultipartPartsOptions = {}
-  ): StorageResult<ListMultipartPartsResponse> {
+  listMultipartUploadParts({
+    bucketName,
+    cursor,
+    limit,
+    uploadId
+  }: ListMultipartUploadPartsParams): StorageResult<ListMultipartPartsResponse> {
     return this.request<ListMultipartPartsResponse>(
       `/buckets/${encodePathSegment(bucketName)}/multipart/upload/${encodePathSegment(
         uploadId
       )}/parts`,
       {
         query: {
-          cursor: options.cursor,
-          limit: options.limit
+          cursor,
+          limit
         }
       }
     )
@@ -588,11 +598,11 @@ export class JupiterStorage {
   /**
    * Get one multipart upload part.
    */
-  getMultipartUploadPart(
-    bucketName: BucketName,
-    uploadId: UploadId,
-    partNumber: PartNumber
-  ): StorageResult<GetMultipartPartResponse> {
+  getMultipartUploadPart({
+    bucketName,
+    partNumber,
+    uploadId
+  }: GetMultipartUploadPartParams): StorageResult<GetMultipartPartResponse> {
     return this.request<GetMultipartPartResponse>(
       `/buckets/${encodePathSegment(bucketName)}/multipart/upload/${encodePathSegment(
         uploadId
@@ -604,24 +614,24 @@ export class JupiterStorage {
    * Complete a multipart upload.
    */
   completeMultipartUpload(
-    bucketName: BucketName,
-    uploadId: UploadId,
-    options: CompleteMultipartUploadOptions = {}
+    params: CompleteMultipartUploadParams
   ): StorageResult<CompleteMultipartUploadResponse> {
+    const { bucketName, partNumbers, signal, uploadId } = params
+
     const requestOptions: RequestOptions = {
       method: 'POST'
     }
 
-    if (options.partNumbers !== undefined) {
+    if (partNumbers !== undefined) {
       requestOptions.body = {
-        parts: options.partNumbers.map((partNumber) => ({
+        parts: partNumbers.map((partNumber) => ({
           part_number: partNumber
         }))
       }
     }
 
-    if (options.signal !== undefined) {
-      requestOptions.signal = options.signal
+    if (signal !== undefined) {
+      requestOptions.signal = signal
     }
 
     return this.request<CompleteMultipartUploadResponse>(

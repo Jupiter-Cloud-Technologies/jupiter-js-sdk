@@ -38,8 +38,9 @@ describe('JupiterStorage', () => {
       name: 'avatars'
     })
 
-    await storage.editBucket('avatars', {
+    await storage.editBucket({
       allowOverwrite: false,
+      bucketName: 'avatars',
       public: true
     })
 
@@ -61,8 +62,11 @@ describe('JupiterStorage', () => {
       uploaded: true
     })
 
-    await storage.uploadObject('avatars', 'users/1.png', 'content', {
+    await storage.uploadObject({
+      body: 'content',
+      bucketName: 'avatars',
       contentType: 'image/png',
+      key: 'users/1.png',
       metadata
     })
 
@@ -81,7 +85,10 @@ describe('JupiterStorage', () => {
       uploaded: true
     })
 
-    await storage.uploadObject('avatars', 'bytes.bin', new Uint8Array([1, 2, 3]), {
+    await storage.uploadObject({
+      body: new Uint8Array([1, 2, 3]),
+      bucketName: 'avatars',
+      key: 'bytes.bin',
       contentType: 'application/octet-stream'
     })
 
@@ -95,7 +102,11 @@ describe('JupiterStorage', () => {
       uploaded: true
     })
 
-    await storage.uploadObject('forms', 'payload.txt', new URLSearchParams({ a: '1', b: '2' }))
+    await storage.uploadObject({
+      body: new URLSearchParams({ a: '1', b: '2' }),
+      bucketName: 'forms',
+      key: 'payload.txt'
+    })
 
     expect(new Headers(requests[0]?.init.headers).get('content-length')).toBe('7')
   })
@@ -107,9 +118,13 @@ describe('JupiterStorage', () => {
       uploaded: true
     })
 
-    expect(() => storage.uploadObject('forms', 'multipart', new FormData() as never)).toThrowError(
-      'FormData uploads are not supported'
-    )
+    expect(() =>
+      storage.uploadObject({
+        body: new FormData() as never,
+        bucketName: 'forms',
+        key: 'multipart'
+      })
+    ).toThrowError('FormData uploads are not supported')
   })
 
   it('requires content length for streams', () => {
@@ -119,9 +134,13 @@ describe('JupiterStorage', () => {
       uploaded: true
     })
 
-    expect(() => storage.uploadObject('raw', 'stream.bin', new ReadableStream())).toThrowError(
-      'contentLength is required'
-    )
+    expect(() =>
+      storage.uploadObject({
+        body: new ReadableStream(),
+        bucketName: 'raw',
+        key: 'stream.bin'
+      })
+    ).toThrowError('contentLength is required')
   })
 
   it('copies an object into the destination path', async () => {
@@ -136,9 +155,11 @@ describe('JupiterStorage', () => {
       success: true
     })
 
-    await storage.copyObject('backup', 'users/1.png', {
+    await storage.copyObject({
       cacheControl: 'public, max-age=60',
       contentType: 'image/png',
+      destinationBucketName: 'backup',
+      destinationKey: 'users/1.png',
       metadata,
       originBucket: 'avatars',
       originKey: 'users/1.png'
@@ -178,7 +199,10 @@ describe('JupiterStorage', () => {
       }
     )
 
-    const result = await storage.downloadObject('avatars', 'users/1.png')
+    const result = await storage.downloadObject({
+      bucketName: 'avatars',
+      key: 'users/1.png'
+    })
 
     expect(requests[0]?.url).toBe(
       'https://storage.example.test/buckets/avatars/objects/users%2F1.png/download'
@@ -204,7 +228,8 @@ describe('JupiterStorage', () => {
       upload_id: 'upload-1'
     })
 
-    await storage.startMultipartUpload('videos', {
+    await storage.startMultipartUpload({
+      bucketName: 'videos',
       contentType: 'video/quicktime',
       key: 'raw/a.mov',
       metadata: {
@@ -229,8 +254,10 @@ describe('JupiterStorage', () => {
       uploaded: true
     })
 
-    await storage.completeMultipartUpload('videos', 'upload-1', {
-      partNumbers: [1, 2]
+    await storage.completeMultipartUpload({
+      bucketName: 'videos',
+      partNumbers: [1, 2],
+      uploadId: 'upload-1'
     })
 
     expect(requests[0]?.url).toBe(
@@ -258,9 +285,12 @@ describe('JupiterStorage', () => {
     })
 
     expect(() =>
-      storage.uploadMultipartPart('videos', 'upload-1', new FormData() as never, {
+      storage.uploadMultipartPart({
+        body: new FormData() as never,
+        bucketName: 'videos',
         contentLength: 1,
-        partNumber: 1
+        partNumber: 1,
+        uploadId: 'upload-1'
       })
     ).toThrowError('FormData uploads are not supported')
   })
