@@ -647,7 +647,7 @@ export class WebAuthnApi {
             const currentUser = await this.client.getUser()
             const userData = currentUser.data.user
             const fallbackName =
-              userData?.user_metadata?.name || userData?.email || userData?.id || 'User'
+              userData?.user_attributes?.name || userData?.email || userData?.id || 'User'
             user.name = `${user.id}:${fallbackName}`
           } else {
             user.name = `${user.id}:${nameToUse}`

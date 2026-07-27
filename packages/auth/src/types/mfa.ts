@@ -271,24 +271,6 @@ export interface UserAttributes {
   data?: object
 }
 
-export interface AdminUserAttributes extends Omit<UserAttributes, 'data'> {
-  user_metadata?: object
-
-  app_metadata?: object
-
-  email_confirm?: boolean
-
-  phone_confirm?: boolean
-
-  ban_duration?: string | 'none'
-
-  role?: string
-
-  password_hash?: string
-
-  id?: string
-}
-
 export interface Subscription {
   id: string | symbol
 
@@ -841,23 +823,6 @@ export type RequiredClaims = {
   role: string
   aal: AuthenticatorAssuranceLevels
   session_id: string
-}
-
-export interface JwtPayload extends RequiredClaims {
-  email?: string
-  phone?: string
-  is_anonymous?: boolean
-
-  jti?: string
-  nbf?: number
-  app_metadata?: UserAppMetadata
-  user_metadata?: UserMetadata
-
-  amr?: AMREntry[] | string[]
-
-  ref?: string
-
-  [key: string]: any
 }
 
 export interface JWK {
