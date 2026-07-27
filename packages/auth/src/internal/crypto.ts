@@ -119,8 +119,8 @@ export interface JwtPayload extends RequiredClaims {
   // Optional claims
   jti?: string
   nbf?: number
-  app_metadata?: UserAppMetadata
-  user_metadata?: UserMetadata
+  system_attributes?: UserAppMetadata
+  user_attributes?: UserMetadata
   /**
    * Authentication Method References.
    * Supports both RFC-8176 compliant format (string[]) and detailed format (AMREntry[]).
