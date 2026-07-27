@@ -1,5 +1,16 @@
 # @jupiter-cloud/auth
 
+## 1.1.0
+
+### Minor Changes
+
+- 5ebff76: i
+
+### Patch Changes
+
+- Updated dependencies [5ebff76]
+  - @jupiter-cloud/core@1.1.0
+
 ## 1.0.0
 
 ### Major Changes

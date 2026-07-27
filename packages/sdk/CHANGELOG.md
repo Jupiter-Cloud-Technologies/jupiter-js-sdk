@@ -1,5 +1,19 @@
 # @jupiter-cloud/sdk
 
+## 1.1.0
+
+### Minor Changes
+
+- 5ebff76: i
+
+### Patch Changes
+
+- Updated dependencies [5ebff76]
+  - @jupiter-cloud/auth@1.1.0
+  - @jupiter-cloud/core@1.1.0
+  - @jupiter-cloud/postgrest@1.1.0
+  - @jupiter-cloud/storage@1.1.0
+
 ## 1.0.0
 
 ### Major Changes
