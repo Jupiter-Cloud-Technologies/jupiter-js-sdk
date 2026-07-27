@@ -86,9 +86,7 @@ export class Jupiter<
     if (this.accessToken) {
       // Start auth immediately to avoid race condition with channel subscriptions
       // Wrap Promise to avoid Firefox extension cross-context Promise access errors
-      Promise.resolve(this.accessToken()).catch((e) =>
-        console.warn('Failed to set initial Realtime auth token:', e)
-      )
+      Promise.resolve(this.accessToken()).catch((e) => console.warn('', e))
     }
 
     this.db = this._initRestClient(this.jdbrestUrlString, this.headers, this.fetch)
@@ -187,9 +185,7 @@ export class Jupiter<
       this.changedAccessToken !== token
     ) {
       this.changedAccessToken = token
-      // this.realtime.setAuth(token)
     } else if (event === 'SIGNED_OUT') {
-      // this.realtime.setAuth()
       if (source == 'STORAGE') this.auth.signOut()
       this.changedAccessToken = undefined
     }

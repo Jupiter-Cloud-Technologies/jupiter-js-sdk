@@ -117,7 +117,7 @@ export type PublicUser = {
   factors?: PublicFactor[]
 
   /** User-controlled metadata. */
-  user_metadata?: JsonObject
+  user_attributes?: JsonObject
 
   /** System-controlled metadata. */
   system_attributes?: JsonObject

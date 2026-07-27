@@ -112,9 +112,6 @@ export type JupiterSDKOptions<SchemaName> = {
      */
     skipAutoInitialize?: JauthClientOptions['skipAutoInitialize']
   }
-  /**
-   * Options passed to the realtime-js instance
-   */
   // storage?: StorageClientOptions
   global?: {
     /**

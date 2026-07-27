@@ -1534,11 +1534,6 @@ export class JupiterAuth {
         return { data: { session: null }, error: null }
       }
 
-      // A session is considered expired before the access token _actually_
-      // expires. When the autoRefreshToken option is off (or when the tab is
-      // in the background), very eager users of getSession() -- like
-      // realtime-js -- might send a valid JWT which will expire by the time it
-      // reaches the server.
       const hasExpired = currentSession.expires_at
         ? currentSession.expires_at * 1000 - Date.now() < EXPIRY_MARGIN_MS
         : false
