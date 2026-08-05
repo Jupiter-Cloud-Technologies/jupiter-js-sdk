@@ -4,14 +4,14 @@
 
 ### Minor Changes
 
-- a55454b: o
-- 9fa85b8: t
+- a55454b: Refactor auth metadata types.
+- 9fa85b8: Update SDK tests for the current public API.
 
 ## 1.1.0
 
 ### Minor Changes
 
-- 5ebff76: i
+- 5ebff76: Standardize storage params.
 
 ## 1.0.0
 
