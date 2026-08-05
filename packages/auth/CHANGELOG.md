@@ -1,5 +1,16 @@
 # @jupiter-cloud/auth
 
+## 3.0.0
+
+### Major Changes
+
+- c703bb2: composite sdk
+
+### Patch Changes
+
+- Updated dependencies [c703bb2]
+  - @jupiter-cloud/core@3.0.0
+
 ## 2.0.0
 
 ### Major Changes
