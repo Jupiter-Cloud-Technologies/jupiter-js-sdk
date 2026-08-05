@@ -1,12 +1,131 @@
 # jupiter-js
 
+## 2.0.0
+
+### @jupiter-cloud/auth
+
+#### Major Changes
+
+- 9c0ab68: composite sdk
+
+#### Patch Changes
+
+- Updated dependencies [9c0ab68]
+  - @jupiter-cloud/core@2.0.0
+
+### @jupiter-cloud/core
+
+#### Major Changes
+
+- 9c0ab68: composite sdk
+
+### @jupiter-cloud/postgrest
+
+#### Major Changes
+
+- 9c0ab68: composite sdk
+
+#### Patch Changes
+
+- Updated dependencies [9c0ab68]
+  - @jupiter-cloud/core@2.0.0
+
+### @jupiter-cloud/sdk
+
+#### Major Changes
+
+- 9c0ab68: composite sdk
+
+#### Patch Changes
+
+- Updated dependencies [9c0ab68]
+  - @jupiter-cloud/auth@2.0.0
+  - @jupiter-cloud/core@2.0.0
+  - @jupiter-cloud/postgrest@2.0.0
+  - @jupiter-cloud/storage@2.0.0
+
+### @jupiter-cloud/storage
+
+#### Major Changes
+
+- 9c0ab68: composite sdk
+
+#### Patch Changes
+
+- Updated dependencies [9c0ab68]
+  - @jupiter-cloud/core@2.0.0
+
+## 1.2.0
+
+### @jupiter-cloud/auth
+
+#### Minor Changes
+
+- a55454b: Refactor auth metadata types.
+- 9fa85b8: Update SDK tests for the current public API.
+
+#### Patch Changes
+
+- Updated dependencies [a55454b]
+- Updated dependencies [9fa85b8]
+  - @jupiter-cloud/core@1.2.0
+
+### @jupiter-cloud/core
+
+#### Minor Changes
+
+- a55454b: Refactor auth metadata types.
+- 9fa85b8: Update SDK tests for the current public API.
+
+### @jupiter-cloud/postgrest
+
+#### Minor Changes
+
+- a55454b: Refactor auth metadata types.
+- 9fa85b8: Update SDK tests for the current public API.
+
+#### Patch Changes
+
+- Updated dependencies [a55454b]
+- Updated dependencies [9fa85b8]
+  - @jupiter-cloud/core@1.2.0
+
+### @jupiter-cloud/sdk
+
+#### Minor Changes
+
+- a55454b: Refactor auth metadata types.
+- 9fa85b8: Update SDK tests for the current public API.
+
+#### Patch Changes
+
+- Updated dependencies [a55454b]
+- Updated dependencies [9fa85b8]
+  - @jupiter-cloud/auth@1.2.0
+  - @jupiter-cloud/core@1.2.0
+  - @jupiter-cloud/postgrest@1.2.0
+  - @jupiter-cloud/storage@1.2.0
+
+### @jupiter-cloud/storage
+
+#### Minor Changes
+
+- a55454b: Refactor auth metadata types.
+- 9fa85b8: Update SDK tests for the current public API.
+
+#### Patch Changes
+
+- Updated dependencies [a55454b]
+- Updated dependencies [9fa85b8]
+  - @jupiter-cloud/core@1.2.0
+
 ## 1.1.0
 
 ### @jupiter-cloud/auth
 
 #### Minor Changes
 
-- 5ebff76: i
+- 5ebff76: Standardize storage params.
 
 #### Patch Changes
 
@@ -17,13 +136,13 @@
 
 #### Minor Changes
 
-- 5ebff76: i
+- 5ebff76: Standardize storage params.
 
 ### @jupiter-cloud/postgrest
 
 #### Minor Changes
 
-- 5ebff76: i
+- 5ebff76: Standardize storage params.
 
 #### Patch Changes
 
@@ -34,7 +153,7 @@
 
 #### Minor Changes
 
-- 5ebff76: i
+- 5ebff76: Standardize storage params.
 
 #### Patch Changes
 
@@ -48,7 +167,7 @@
 
 #### Minor Changes
 
-- 5ebff76: i
+- 5ebff76: Standardize storage params.
 
 #### Patch Changes
 
@@ -193,7 +312,7 @@
 
 #### Patch Changes
 
-- 16c20b4: 1
+- 16c20b4: Stabilize auth WebAuthn and MFA types.
   - @jupiter-cloud/core@0.4.1
 
 ### @jupiter-cloud/core

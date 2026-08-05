@@ -1,10 +1,34 @@
 # @jupiter-cloud/storage
 
+## 2.0.0
+
+### Major Changes
+
+- 9c0ab68: composite sdk
+
+### Patch Changes
+
+- Updated dependencies [9c0ab68]
+  - @jupiter-cloud/core@2.0.0
+
+## 1.2.0
+
+### Minor Changes
+
+- a55454b: Refactor auth metadata types.
+- 9fa85b8: Update SDK tests for the current public API.
+
+### Patch Changes
+
+- Updated dependencies [a55454b]
+- Updated dependencies [9fa85b8]
+  - @jupiter-cloud/core@1.2.0
+
 ## 1.1.0
 
 ### Minor Changes
 
-- 5ebff76: i
+- 5ebff76: Standardize storage params.
 
 ### Patch Changes
 
