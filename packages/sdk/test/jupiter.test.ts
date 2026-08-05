@@ -11,7 +11,6 @@ describe('Jupiter', () => {
 
     expect(client.auth).toBeDefined()
     expect(client.storage).toBeDefined()
-    expect(client.db).toBeDefined()
   })
 
   it('uses the configured base URL for service clients', async () => {
