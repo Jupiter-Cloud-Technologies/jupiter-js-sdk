@@ -1,5 +1,18 @@
 # @jupiter-cloud/postgrest
 
+## 1.2.0
+
+### Minor Changes
+
+- a55454b: o
+- 9fa85b8: t
+
+### Patch Changes
+
+- Updated dependencies [a55454b]
+- Updated dependencies [9fa85b8]
+  - @jupiter-cloud/core@1.2.0
+
 ## 1.1.0
 
 ### Minor Changes
