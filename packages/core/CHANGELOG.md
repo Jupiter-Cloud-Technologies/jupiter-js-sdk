@@ -1,5 +1,11 @@
 # @jupiter-cloud/core
 
+## 3.0.0
+
+### Major Changes
+
+- c703bb2: composite sdk
+
 ## 2.0.0
 
 ### Major Changes

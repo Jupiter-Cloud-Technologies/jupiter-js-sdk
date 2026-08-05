@@ -1,5 +1,60 @@
 # jupiter-js
 
+## 3.0.0
+
+### @jupiter-cloud/auth
+
+#### Major Changes
+
+- c703bb2: composite sdk
+
+#### Patch Changes
+
+- Updated dependencies [c703bb2]
+  - @jupiter-cloud/core@3.0.0
+
+### @jupiter-cloud/core
+
+#### Major Changes
+
+- c703bb2: composite sdk
+
+### @jupiter-cloud/postgrest
+
+#### Major Changes
+
+- c703bb2: composite sdk
+
+#### Patch Changes
+
+- Updated dependencies [c703bb2]
+  - @jupiter-cloud/core@3.0.0
+
+### @jupiter-cloud/sdk
+
+#### Major Changes
+
+- c703bb2: composite sdk
+
+#### Patch Changes
+
+- Updated dependencies [c703bb2]
+  - @jupiter-cloud/auth@3.0.0
+  - @jupiter-cloud/core@3.0.0
+  - @jupiter-cloud/postgrest@3.0.0
+  - @jupiter-cloud/storage@3.0.0
+
+### @jupiter-cloud/storage
+
+#### Major Changes
+
+- c703bb2: composite sdk
+
+#### Patch Changes
+
+- Updated dependencies [c703bb2]
+  - @jupiter-cloud/core@3.0.0
+
 ## 2.0.0
 
 ### @jupiter-cloud/auth
