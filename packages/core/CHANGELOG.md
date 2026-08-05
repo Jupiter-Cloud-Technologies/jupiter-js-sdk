@@ -1,5 +1,11 @@
 # @jupiter-cloud/core
 
+## 2.0.0
+
+### Major Changes
+
+- 9c0ab68: composite sdk
+
 ## 1.2.0
 
 ### Minor Changes

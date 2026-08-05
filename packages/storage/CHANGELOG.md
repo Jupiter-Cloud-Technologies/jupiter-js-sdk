@@ -1,5 +1,16 @@
 # @jupiter-cloud/storage
 
+## 2.0.0
+
+### Major Changes
+
+- 9c0ab68: composite sdk
+
+### Patch Changes
+
+- Updated dependencies [9c0ab68]
+  - @jupiter-cloud/core@2.0.0
+
 ## 1.2.0
 
 ### Minor Changes
