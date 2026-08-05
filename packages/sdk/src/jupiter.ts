@@ -5,15 +5,10 @@ import { applySettingDefaults, type ResolvedJupiterSDKOptions } from './helpers'
 import type { JupiterAuthOptions } from '.'
 import { fetchWithAuth } from './fetch'
 import { JupiterAuth, type AuthChangeEvent } from '@jupiter-cloud/auth'
-import { NeonPostgrestClient, type DefaultSchemaName } from '@jupiter-cloud/postgrest'
 import { getDefaults } from './internal/defaults'
 import { validateProjectId } from './internal/validation'
 
-export class Jupiter<
-  Database = any,
-  SchemaName extends string & keyof Database = DefaultSchemaName<Database>
-> {
-  db: NeonPostgrestClient<Database, SchemaName>
+export class Jupiter {
   auth: JupiterAuth
   storage: JupiterStorage
 
@@ -32,14 +27,9 @@ export class Jupiter<
   protected accessToken?: () => Promise<string | null>
 
   protected headers: Record<string, string>
-  protected settings?: ResolvedJupiterSDKOptions<SchemaName>
+  protected settings?: ResolvedJupiterSDKOptions
 
-  constructor(
-    baseurl: string,
-    projectId: string,
-    adminToken: string,
-    options?: JupiterSDKOptions<SchemaName>
-  ) {
+  constructor(baseurl: string, projectId: string, adminToken: string, options?: JupiterSDKOptions) {
     this.baseUrl = normalizeBaseUrl(baseurl)
     validateProjectId(projectId)
     this.projectId = projectId
@@ -89,7 +79,7 @@ export class Jupiter<
       Promise.resolve(this.accessToken()).catch((e) => console.warn('', e))
     }
 
-    this.db = this._initRestClient(this.jdbrestUrlString, this.headers, this.fetch)
+    // this.db = this._initRestClient(this.jdbrestUrlString, this.headers, this.fetch)
 
     this.storage = this.createStorage()
 
@@ -108,7 +98,7 @@ export class Jupiter<
     return data.session?.access_token ?? null
   }
 
-  private _initRestClient(url: string, headers: Record<string, string>, fetch: Fetch) {
+  /*private _initRestClient(url: string, headers: Record<string, string>, fetch: Fetch) {
     const client = new NeonPostgrestClient<Database, SchemaName>({
       dataApiUrl: url,
       options: {
@@ -119,7 +109,7 @@ export class Jupiter<
       }
     })
     return client
-  }
+  }*/
 
   private _initAuthClient(
     {

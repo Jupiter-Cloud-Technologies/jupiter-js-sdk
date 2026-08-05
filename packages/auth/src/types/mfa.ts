@@ -246,16 +246,12 @@ export type Factor<
   last_challenged_at?: string
 }
 
-export interface UserAppMetadata {
+/*export interface UserAppMetadata {
   provider?: string
 
   providers?: string[]
   [key: string]: any
-}
-
-export interface UserMetadata {
-  [key: string]: any
-}
+}*/
 
 export interface UserAttributes {
   current_password?: string

@@ -89,10 +89,10 @@ export default class JupiterAuthAdmin {
       throw error
     }
   }
-  async createUser(attributes: AdminUserAttributesParams): Promise<UserResponse> {
+  async createUser(params: AdminUserAttributesParams): Promise<UserResponse> {
     try {
       return await _request(this.fetch, 'POST', `${this.url}/admin/users`, {
-        body: attributes,
+        body: params,
         headers: this.headers,
         xform: _userResponse
       })
@@ -159,12 +159,12 @@ export default class JupiterAuthAdmin {
       throw error
     }
   }
-  async updateUserById(uid: string, attributes: AdminUserAttributesParams): Promise<UserResponse> {
+  async updateUserById(uid: string, params: AdminUserAttributesParams): Promise<UserResponse> {
     validateUUID(uid)
 
     try {
       return await _request(this.fetch, 'PUT', `${this.url}/admin/users/${uid}`, {
-        body: attributes,
+        body: params,
         headers: this.headers,
         xform: _userResponse
       })

@@ -1,3 +1,4 @@
+import type { JsonObject } from '@jupiter-cloud/core'
 import type { RequestResult } from '../types'
 import { base64UrlToUint8Array, stringFromBase64URL } from './base64'
 import { BASE64URL_REGEX } from './constants'
@@ -82,13 +83,8 @@ const AMRMethods = [
   'anonymous',
   'sso/saml',
   'magiclink',
-  'web3',
   'oauth_provider/authorization_code'
 ] as const
-
-export interface UserMetadata {
-  [key: string]: any
-}
 
 export interface UserAppMetadata {
   /**
@@ -119,8 +115,8 @@ export interface JwtPayload extends RequiredClaims {
   // Optional claims
   jti?: string
   nbf?: number
-  system_attributes?: UserAppMetadata
-  user_attributes?: UserMetadata
+  system_attributes?: JsonObject
+  user_attributes?: JsonObject
   /**
    * Authentication Method References.
    * Supports both RFC-8176 compliant format (string[]) and detailed format (AMREntry[]).
