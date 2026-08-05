@@ -46,7 +46,7 @@ export type AccessTokenResponse = {
   provider_refresh_token?: string
 
   /** Password policy details when a password is accepted but weak. */
-  weak_password?: WeakPassword
+  // weak_password?: WeakPassword
 
   /** ID token returned by identity provider flows. */
   id_token?: string

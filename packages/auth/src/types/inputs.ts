@@ -176,30 +176,6 @@ export type VerifyOptions = {
   newPassword?: string
 }
 
-/** User update request body. */
-export type UserUpdateRequest = {
-  email?: string | undefined
-  phone?: string | undefined
-  nonce?: string | undefined
-  attributes?: JsonObject | undefined
-  app_metadata?: JsonObject | undefined
-  channel?: Channel | undefined
-  code_challenge_method?: CodeChallengeMethod | undefined
-  code_challenge?: string | undefined
-}
-
-/** Ergonomic current-user update options. */
-export type UserUpdateOptions = {
-  email?: string
-  phone?: string
-  nonce?: string
-  attributes?: JsonObject
-  appMetadata?: JsonObject
-  channel?: Channel
-  codeChallengeMethod?: CodeChallengeMethod
-  codeChallenge?: string
-}
-
 /** Current-user password update request body. */
 export type UserUpdatePasswordRequest = {
   new_password: string
@@ -477,7 +453,7 @@ export type SignInWithPasswordlessCredentials =
          *
          * The `data` should be a JSON object that includes user-specific info, such as their first and last name.
          */
-        data?: object
+        attributes?: object
         /** Verification token received when the user completes the captcha on the site. */
         captchaToken?: string
       }
@@ -493,7 +469,7 @@ export type SignInWithPasswordlessCredentials =
          *
          * The `data` should be a JSON object that includes user-specific info, such as their first and last name.
          */
-        data?: object
+        attributes?: object
         /** Verification token received when the user completes the captcha on the site. */
         captchaToken?: string
         /** Messaging channel to use (e.g. whatsapp or sms) */

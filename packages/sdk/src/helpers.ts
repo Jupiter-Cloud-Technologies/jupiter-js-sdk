@@ -14,32 +14,24 @@ export function ensureTrailingSlash(url: string): string {
 
 export const isBrowser = () => typeof window !== 'undefined'
 
-export type ResolvedJupiterSDKOptions<SchemaName> = Omit<
-  Required<JupiterSDKOptions<SchemaName>>,
-  'tracePropagation'
-> & {}
+export type ResolvedJupiterSDKOptions = Omit<Required<JupiterSDKOptions>, 'tracePropagation'> & {}
 
-export function applySettingDefaults<
-  Database = any,
-  SchemaName extends string & keyof Database = 'public' extends keyof Database
-    ? 'public'
-    : string & keyof Database
->(
-  options: JupiterSDKOptions<SchemaName>,
-  defaults: JupiterSDKOptions<any>
-): ResolvedJupiterSDKOptions<SchemaName> {
-  const { db: dbOptions, auth: authOptions, global: globalOptions } = options
+export function applySettingDefaults(
+  options: JupiterSDKOptions,
+  defaults: JupiterSDKOptions
+): ResolvedJupiterSDKOptions {
+  const { /*db: dbOptions,*/ auth: authOptions, global: globalOptions } = options
   const {
-    db: DEFAULT_DB_OPTIONS,
+    // db: DEFAULT_DB_OPTIONS,
     auth: DEFAULT_AUTH_OPTIONS,
     global: DEFAULT_GLOBAL_OPTIONS
   } = defaults
 
-  const result: ResolvedJupiterSDKOptions<SchemaName> = {
-    db: {
+  const result: ResolvedJupiterSDKOptions = {
+    /*db: {
       ...DEFAULT_DB_OPTIONS,
       ...dbOptions
-    },
+    },*/
     auth: {
       ...DEFAULT_AUTH_OPTIONS,
       ...authOptions

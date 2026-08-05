@@ -14,13 +14,13 @@ export type JupiterOptions = {
   token?: string | undefined
 }
 
-export type JupiterSDKOptions<SchemaName> = {
+export type JupiterSDKOptions = {
   /**
    * The Postgres schema which your tables belong to. Must be on the list of exposed schemas in Supabase. Defaults to `public`.
    */
-  db?: {
+  /*db?: {
     schema?: SchemaName
-  }
+  }*/
 
   auth?: {
     /**

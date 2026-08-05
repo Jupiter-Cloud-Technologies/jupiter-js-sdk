@@ -8,7 +8,6 @@ import type {
   ProjectId,
   UserId
 } from './primitives'
-
 /** Password policy feedback returned by Auth. */
 export type WeakPassword = {
   /** Human-readable password policy message. */
@@ -116,10 +115,10 @@ export type PublicUser = {
   /** MFA factors enrolled by the user. */
   factors?: PublicFactor[]
 
-  /** User-controlled metadata. */
+  /**  */
   user_attributes?: JsonObject
 
-  /** System-controlled metadata. */
+  /**  */
   system_attributes?: JsonObject
 }
 
