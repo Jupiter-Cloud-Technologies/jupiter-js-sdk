@@ -1,19 +1,17 @@
-# Jupiter JavaScript SDK
+# Jupiter Cloud JavaScript SDK
 
 JavaScript and TypeScript SDKs for Jupiter Cloud.
 
 ## Packages
 
-- `@jupiter-cloud/core`: shared runtime, HTTP, errors, and utility types.
 - `@jupiter-cloud/auth`: standalone Auth SDK.
 - `@jupiter-cloud/storage`: standalone Storage SDK.
-- db-rest
-- `@jupiter-cloud/sdk`: aggregate SDK that composes product SDKs.
+- `@jupiter-cloud/sdk`: complete client library for Jupiter Cloud
 
 ## Install
 
 ```sh
-pnpm add @jupiter-cloud/sdk
+npm i @jupiter-cloud/sdk
 ```
 
 ## Usage
@@ -21,28 +19,12 @@ pnpm add @jupiter-cloud/sdk
 ```ts
 import { Jupiter } from '@jupiter-cloud/sdk'
 
-const jupiter = new Jupiter({
-  baseUrl: 'https://api.jupiter.example',
-  projectId: 'project-id',
-  token: 'public-or-user-token',
-  timeoutMs: 10_000,
-  fetch
-})
+const jupiter = new Jupiter('https://api.jupitercloud.co', '550e8400-e29b-41d4-a716-446655440000')
 
 const { data, error } = await jupiter.storage.listBuckets()
-const { data: session } = await jupiter.auth.signInWithPassword({
+
+const { data: session } = await jupiter.auth.signInWithEmailAndPassword({
   email: 'user@example.com',
   password: 'password1'
-})
-```
-
-Use a standalone product package when you only need one service:
-
-```ts
-import { JupiterStorage } from '@jupiter-cloud/storage'
-
-const storage = new JupiterStorage('https://storage.jupiter.example', {
-  projectId: 'project-id',
-  token: 'service-or-user-token'
 })
 ```
