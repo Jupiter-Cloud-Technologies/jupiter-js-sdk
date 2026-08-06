@@ -1,13 +1,5 @@
 # Jupiter Cloud JavaScript SDK
 
-JavaScript and TypeScript SDKs for Jupiter Cloud.
-
-## Packages
-
-- `@jupiter-cloud/auth`: standalone Auth SDK.
-- `@jupiter-cloud/storage`: standalone Storage SDK.
-- `@jupiter-cloud/sdk`: complete client library for Jupiter Cloud
-
 ## Install
 
 ```sh
