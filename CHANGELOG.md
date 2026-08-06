@@ -6,7 +6,7 @@
 
 #### Minor Changes
 
-- a46d351: o
+- a46d351: Fix auth user metadata.
 
 #### Patch Changes
 
@@ -17,13 +17,13 @@
 
 #### Minor Changes
 
-- a46d351: o
+- a46d351: Fix auth user metadata.
 
 ### @jupiter-cloud/postgrest
 
 #### Minor Changes
 
-- a46d351: o
+- a46d351: Fix auth user metadata.
 
 #### Patch Changes
 
@@ -34,7 +34,7 @@
 
 #### Minor Changes
 
-- a46d351: o
+- a46d351: Fix auth user metadata.
 
 #### Patch Changes
 
@@ -48,7 +48,7 @@
 
 #### Minor Changes
 
-- a46d351: o
+- a46d351: Fix auth user metadata.
 
 #### Patch Changes
 
