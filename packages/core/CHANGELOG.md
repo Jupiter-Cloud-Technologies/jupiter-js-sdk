@@ -1,5 +1,11 @@
 # @jupiter-cloud/core
 
+## 3.1.0
+
+### Minor Changes
+
+- a46d351: o
+
 ## 3.0.0
 
 ### Major Changes

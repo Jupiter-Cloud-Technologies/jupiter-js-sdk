@@ -1,5 +1,60 @@
 # jupiter-js
 
+## 3.1.0
+
+### @jupiter-cloud/auth
+
+#### Minor Changes
+
+- a46d351: o
+
+#### Patch Changes
+
+- Updated dependencies [a46d351]
+  - @jupiter-cloud/core@3.1.0
+
+### @jupiter-cloud/core
+
+#### Minor Changes
+
+- a46d351: o
+
+### @jupiter-cloud/postgrest
+
+#### Minor Changes
+
+- a46d351: o
+
+#### Patch Changes
+
+- Updated dependencies [a46d351]
+  - @jupiter-cloud/core@3.1.0
+
+### @jupiter-cloud/sdk
+
+#### Minor Changes
+
+- a46d351: o
+
+#### Patch Changes
+
+- Updated dependencies [a46d351]
+  - @jupiter-cloud/auth@3.1.0
+  - @jupiter-cloud/core@3.1.0
+  - @jupiter-cloud/postgrest@3.1.0
+  - @jupiter-cloud/storage@3.1.0
+
+### @jupiter-cloud/storage
+
+#### Minor Changes
+
+- a46d351: o
+
+#### Patch Changes
+
+- Updated dependencies [a46d351]
+  - @jupiter-cloud/core@3.1.0
+
 ## 3.0.0
 
 ### @jupiter-cloud/auth
