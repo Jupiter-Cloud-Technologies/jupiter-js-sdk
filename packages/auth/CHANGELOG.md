@@ -1,5 +1,16 @@
 # @jupiter-cloud/auth
 
+## 3.1.0
+
+### Minor Changes
+
+- a46d351: o
+
+### Patch Changes
+
+- Updated dependencies [a46d351]
+  - @jupiter-cloud/core@3.1.0
+
 ## 3.0.0
 
 ### Major Changes
