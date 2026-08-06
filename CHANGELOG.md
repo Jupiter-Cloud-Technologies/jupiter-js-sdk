@@ -1,5 +1,60 @@
 # jupiter-js
 
+## 3.2.0
+
+### @jupiter-cloud/auth
+
+#### Minor Changes
+
+- 400f734: Correct Sdk READMe
+
+#### Patch Changes
+
+- Updated dependencies [400f734]
+  - @jupiter-cloud/core@3.2.0
+
+### @jupiter-cloud/core
+
+#### Minor Changes
+
+- 400f734: Correct Sdk READMe
+
+### @jupiter-cloud/postgrest
+
+#### Minor Changes
+
+- 400f734: Correct Sdk READMe
+
+#### Patch Changes
+
+- Updated dependencies [400f734]
+  - @jupiter-cloud/core@3.2.0
+
+### @jupiter-cloud/sdk
+
+#### Minor Changes
+
+- 400f734: Correct Sdk READMe
+
+#### Patch Changes
+
+- Updated dependencies [400f734]
+  - @jupiter-cloud/postgrest@3.2.0
+  - @jupiter-cloud/storage@3.2.0
+  - @jupiter-cloud/auth@3.2.0
+  - @jupiter-cloud/core@3.2.0
+
+### @jupiter-cloud/storage
+
+#### Minor Changes
+
+- 400f734: Correct Sdk READMe
+
+#### Patch Changes
+
+- Updated dependencies [400f734]
+  - @jupiter-cloud/core@3.2.0
+
 ## 3.1.0
 
 ### @jupiter-cloud/auth

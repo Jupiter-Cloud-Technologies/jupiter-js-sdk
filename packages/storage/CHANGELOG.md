@@ -1,5 +1,16 @@
 # @jupiter-cloud/storage
 
+## 3.2.0
+
+### Minor Changes
+
+- 400f734: Correct Sdk READMe
+
+### Patch Changes
+
+- Updated dependencies [400f734]
+  - @jupiter-cloud/core@3.2.0
+
 ## 3.1.0
 
 ### Minor Changes
