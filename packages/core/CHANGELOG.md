@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- a46d351: o
+- a46d351: Fix auth user metadata.
 
 ## 3.0.0
 
