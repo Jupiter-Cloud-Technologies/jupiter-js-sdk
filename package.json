@@ -12,7 +12,7 @@
   "bugs": {
     "url": "https://github.com/Jupiter-Cloud-Technologies/jupiter-js-sdk/issues"
   },
-  "homepage": "https://github.com/Jupiter-Cloud-Technologies/jupiter-js-sdk#readme",
+  "homepage": "https://jupitercloud.co",
   "packageManager": "pnpm@9.15.4",
   "engines": {
     "node": ">=20"
