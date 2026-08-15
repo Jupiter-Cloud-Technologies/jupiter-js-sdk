@@ -1,5 +1,18 @@
 # @jupiter-cloud/sdk
 
+## 4.0.0
+
+### Major Changes
+
+- d341b64: Rename metadata to attributes in Storage
+
+### Patch Changes
+
+- Updated dependencies [d341b64]
+  - @jupiter-cloud/auth@4.0.0
+  - @jupiter-cloud/core@4.0.0
+  - @jupiter-cloud/storage@4.0.0
+
 ## 3.2.0
 
 ### Minor Changes
