@@ -14,6 +14,13 @@ describe('Jupiter', () => {
     // expect(client.db).toBeDefined()
   })
 
+  it('creates service clients without an admin token', () => {
+    const client = new Jupiter('https://api.example.test', projectId)
+
+    expect(client.auth).toBeDefined()
+    expect(client.storage).toBeDefined()
+  })
+
   it('uses the configured base URL for service clients', async () => {
     const requests: CapturedRequest[] = []
     const client = new Jupiter('https://api.example.test/', projectId, adminToken, {
@@ -46,6 +53,20 @@ describe('Jupiter', () => {
       projectId,
       projectId
     ])
+  })
+
+  it('accepts options as the third argument when no admin token is provided', async () => {
+    const requests: CapturedRequest[] = []
+    const client = new Jupiter('https://api.example.test', projectId, {
+      global: {
+        fetch: createFetch(requests)
+      }
+    })
+
+    await client.storage.listBuckets()
+
+    expect(requests[0]?.headers.get('authorization')).toBeNull()
+    expect(requests[0]?.headers.get(JUPITER_PROJECT_ID_HEADER)).toBe(projectId)
   })
 })
 

@@ -27,7 +27,18 @@ export class Jupiter {
   protected headers: Record<string, string>
   protected settings?: ResolvedJupiterSDKOptions
 
-  constructor(baseurl: string, projectId: string, adminToken: string, options?: JupiterSDKOptions) {
+  constructor(baseurl: string, projectId: string)
+  constructor(baseurl: string, projectId: string, options: JupiterSDKOptions)
+  constructor(baseurl: string, projectId: string, adminToken: string, options?: JupiterSDKOptions)
+  constructor(
+    baseurl: string,
+    projectId: string,
+    adminTokenOrOptions?: string | JupiterSDKOptions,
+    options?: JupiterSDKOptions
+  ) {
+    const adminToken = typeof adminTokenOrOptions === 'string' ? adminTokenOrOptions : undefined
+    const resolvedOptions = typeof adminTokenOrOptions === 'string' ? options : adminTokenOrOptions
+
     this.baseUrl = normalizeBaseUrl(baseurl)
     validateProjectId(projectId)
     this.projectId = projectId
@@ -37,7 +48,7 @@ export class Jupiter {
 
     this.projectId = projectId
     const defaults = getDefaults(this.baseUrlU, this.projectId)
-    const settings = applySettingDefaults(options ?? {}, defaults)
+    const settings = applySettingDefaults(resolvedOptions ?? {}, defaults)
     this.settings = settings
 
     this.storageKey = settings.auth.storageKey ?? ''
