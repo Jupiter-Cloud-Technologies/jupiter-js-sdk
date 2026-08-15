@@ -1,5 +1,16 @@
 # @jupiter-cloud/auth
 
+## 4.1.0
+
+### Minor Changes
+
+- e65db5d: make the admin key in the sdk optional
+
+### Patch Changes
+
+- Updated dependencies [e65db5d]
+  - @jupiter-cloud/core@4.1.0
+
 ## 4.0.0
 
 ### Major Changes
