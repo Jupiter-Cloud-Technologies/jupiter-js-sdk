@@ -1,5 +1,39 @@
 # jupiter-js
 
+## 4.1.1
+
+### @jupiter-cloud/auth
+
+#### Patch Changes
+
+- 2a4c69a: correct phone params for sign in
+- Updated dependencies [2a4c69a]
+  - @jupiter-cloud/core@4.1.1
+
+### @jupiter-cloud/core
+
+#### Patch Changes
+
+- 2a4c69a: correct phone params for sign in
+
+### @jupiter-cloud/sdk
+
+#### Patch Changes
+
+- 2a4c69a: correct phone params for sign in
+- Updated dependencies [2a4c69a]
+  - @jupiter-cloud/auth@4.1.1
+  - @jupiter-cloud/core@4.1.1
+  - @jupiter-cloud/storage@4.1.1
+
+### @jupiter-cloud/storage
+
+#### Patch Changes
+
+- 2a4c69a: correct phone params for sign in
+- Updated dependencies [2a4c69a]
+  - @jupiter-cloud/core@4.1.1
+
 ## 4.1.0
 
 ### @jupiter-cloud/auth

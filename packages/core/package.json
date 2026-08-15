@@ -1,6 +1,6 @@
 {
   "name": "@jupiter-cloud/core",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "Shared runtime primitives for Jupiter JavaScript SDKs.",
   "license": "MIT",
   "repository": {

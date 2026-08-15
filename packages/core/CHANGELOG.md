@@ -1,5 +1,11 @@
 # @jupiter-cloud/core
 
+## 4.1.1
+
+### Patch Changes
+
+- 2a4c69a: correct phone params for sign in
+
 ## 4.1.0
 
 ### Minor Changes
