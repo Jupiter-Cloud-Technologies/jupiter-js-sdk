@@ -1,4 +1,4 @@
-import { expectType } from 'tsd'
+import { expectError, expectType } from 'tsd'
 import { JupiterAuth, type AuthResponse, type AuthTokenResponsePassword } from '../..'
 
 const auth = new JupiterAuth('https://auth.example.test', {
@@ -14,6 +14,30 @@ expectType<Promise<AuthTokenResponsePassword>>(
 )
 expectType<Promise<AuthResponse>>(
   auth.signUpWithEmailAndPassword({
+    email: 'user@example.com',
+    password: 'password1'
+  })
+)
+expectType<Promise<AuthResponse>>(
+  auth.signUpWithPhoneAndPassword({
+    phone: '+15555550100',
+    password: 'password1'
+  })
+)
+expectError(
+  auth.signUpWithPhoneAndPassword({
+    email: 'user@example.com',
+    password: 'password1'
+  })
+)
+expectType<Promise<AuthTokenResponsePassword>>(
+  auth.signInWithPhoneAndPassword({
+    phone: '+15555550100',
+    password: 'password1'
+  })
+)
+expectError(
+  auth.signInWithPhoneAndPassword({
     email: 'user@example.com',
     password: 'password1'
   })

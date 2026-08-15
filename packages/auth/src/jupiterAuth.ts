@@ -7,6 +7,7 @@ import type {
   PublicFactor,
   PublicUser,
   AuthResponse,
+  SignUpWithPhoneRequest,
   SignUpWithPasswordRequest,
   SignInWithEmailAndPasswordRequest,
   SignInWithPhoneAndPasswordRequest,
@@ -700,10 +701,10 @@ export class JupiterAuth {
   }
 
   // Phone signup with password
-  async signUpWithPhoneAndPassword(credentials: SignUpWithPasswordRequest): Promise<AuthResponse> {
+  async signUpWithPhoneAndPassword(credentials: SignUpWithPhoneRequest): Promise<AuthResponse> {
     try {
       let res: AuthResponse
-      const { email, password, attributes, options } = credentials
+      const { phone, password, attributes } = credentials
       let codeChallenge: string | undefined = undefined
       let codeChallengeMethod: string | undefined = undefined
       if (this.flowType === 'pkce') {
@@ -715,9 +716,8 @@ export class JupiterAuth {
 
       res = await _request(this.fetch, 'POST', `${this.url}/signup`, {
         headers: this.headers,
-        ...(options?.emailRedirectTo ? { redirectTo: options.emailRedirectTo } : {}),
         body: {
-          email,
+          phone,
           password,
           attributes: attributes ?? {},
           code_challenge: codeChallenge,
@@ -757,10 +757,12 @@ export class JupiterAuth {
     credentials: SignInWithEmailAndPasswordRequest
   ): Promise<AuthTokenResponsePassword> {
     try {
-      let res: AuthResponsePassword
-      if ('email' in credentials) {
-        const { email, password, options } = credentials
-        res = await _request(this.fetch, 'POST', `${this.url}/token?grant_type=password`, {
+      const { email, password, options } = credentials
+      const res: AuthResponsePassword = await _request(
+        this.fetch,
+        'POST',
+        `${this.url}/token?grant_type=password`,
+        {
           headers: this.headers,
           body: {
             email,
@@ -770,22 +772,8 @@ export class JupiterAuth {
               : {})
           },
           xform: _sessionResponsePassword
-        })
-      } else if ('phone' in credentials) {
-        const { phone, password } = credentials
-        res = await _request(this.fetch, 'POST', `${this.url}/token?grant_type=password`, {
-          headers: this.headers,
-          body: {
-            phone,
-            password
-          },
-          xform: _sessionResponsePassword
-        })
-      } else {
-        throw new AuthInvalidCredentialsError(
-          'You must provide either an email or phone number and a password'
-        )
-      }
+        }
+      )
       const { data, error } = res
 
       if (error) {
@@ -819,23 +807,12 @@ export class JupiterAuth {
     credentials: SignInWithPhoneAndPasswordRequest
   ): Promise<AuthTokenResponsePassword> {
     try {
-      let res: AuthResponsePassword
-      if ('email' in credentials) {
-        const { email, password, options } = credentials
-        res = await _request(this.fetch, 'POST', `${this.url}/token?grant_type=password`, {
-          headers: this.headers,
-          body: {
-            email,
-            password,
-            ...(options?.captchaToken
-              ? { gotrue_meta_security: { captcha_token: options.captchaToken } }
-              : {})
-          },
-          xform: _sessionResponsePassword
-        })
-      } else if ('phone' in credentials) {
-        const { phone, password, options } = credentials
-        res = await _request(this.fetch, 'POST', `${this.url}/token?grant_type=password`, {
+      const { phone, password, options } = credentials
+      const res: AuthResponsePassword = await _request(
+        this.fetch,
+        'POST',
+        `${this.url}/token?grant_type=password`,
+        {
           headers: this.headers,
           body: {
             phone,
@@ -845,12 +822,8 @@ export class JupiterAuth {
               : {})
           },
           xform: _sessionResponsePassword
-        })
-      } else {
-        throw new AuthInvalidCredentialsError(
-          'You must provide either an email or phone number and a password'
-        )
-      }
+        }
+      )
       const { data, error } = res
 
       if (error) {

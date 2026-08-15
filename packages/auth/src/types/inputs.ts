@@ -289,7 +289,6 @@ export type SignUpWithPhoneRequest = {
   password: string
   attributes?: JsonObject
   options?: {
-    emailRedirectTo?: string // only for email
     captchaToken?: string
   }
 }
@@ -426,8 +425,6 @@ export type signInWithPhoneCredentials = {
   attributes?: JsonObject
   createIfNotExists?: boolean
   options?: {
-    /** The redirect url embedded in the email link */
-    emailRedirectTo?: string
     /** If set to false, this method will not create a new user. Defaults to true. */
     /**
      * A custom data object to store the user's metadata. This maps to the `auth.users.raw_user_meta_data` column.
