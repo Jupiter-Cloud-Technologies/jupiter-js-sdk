@@ -54,7 +54,7 @@ describe('JupiterStorage', () => {
 
   it('encodes object keys as one path segment', async () => {
     const requests: CapturedRequest[] = []
-    const metadata = {
+    const attributes = {
       owner: 'user-1'
     }
     const storage = createStorage(requests, {
@@ -67,7 +67,7 @@ describe('JupiterStorage', () => {
       bucketName: 'avatars',
       contentType: 'image/png',
       key: 'users/1.png',
-      metadata
+      attributes
     })
 
     expect(requests[0]?.url).toBe(
@@ -75,7 +75,7 @@ describe('JupiterStorage', () => {
     )
     expect(new Headers(requests[0]?.init.headers).get('content-type')).toBe('image/png')
     expect(new Headers(requests[0]?.init.headers).get('content-length')).toBe('7')
-    expect(decodeMetadata(new Headers(requests[0]?.init.headers))).toEqual(metadata)
+    expect(decodeMetadata(new Headers(requests[0]?.init.headers))).toEqual(attributes)
   })
 
   it('infers content length for typed arrays', async () => {
@@ -145,7 +145,7 @@ describe('JupiterStorage', () => {
 
   it('copies an object into the destination path', async () => {
     const requests: CapturedRequest[] = []
-    const metadata = {
+    const attributes = {
       owner: 'user-1'
     }
     const storage = createStorage(requests, {
@@ -160,7 +160,7 @@ describe('JupiterStorage', () => {
       contentType: 'image/png',
       destinationBucketName: 'backup',
       destinationKey: 'users/1.png',
-      metadata,
+      attributes,
       originBucket: 'avatars',
       originKey: 'users/1.png'
     })
@@ -172,7 +172,7 @@ describe('JupiterStorage', () => {
     expectJsonBody(requests[0]?.init.body, {
       cacheControl: 'public, max-age=60',
       contentType: 'image/png',
-      objectMetadata: metadata,
+      objectMetadata: attributes,
       originBucket: 'avatars',
       originKey: 'users/1.png'
     })
@@ -180,7 +180,7 @@ describe('JupiterStorage', () => {
 
   it('downloads an object with response header metadata', async () => {
     const requests: CapturedRequest[] = []
-    const metadata = {
+    const attributes = {
       owner: 'user-1'
     }
     const storage = createStorage(
@@ -194,7 +194,7 @@ describe('JupiterStorage', () => {
         'content-type': 'image/png',
         etag: 'etag-1',
         'x-jupiter-object-created-at': '2026-07-05T12:00:00.000Z',
-        'x-jupiter-object-metadata': encodeMetadata(metadata),
+        'x-jupiter-object-metadata': encodeMetadata(attributes),
         'x-jupiter-object-updated-at': '2026-07-05T12:30:00.000Z'
       }
     )
@@ -215,12 +215,12 @@ describe('JupiterStorage', () => {
       contentType: 'image/png',
       createdAt: '2026-07-05T12:00:00.000Z',
       etag: 'etag-1',
-      metadata,
+      attributes,
       updatedAt: '2026-07-05T12:30:00.000Z'
     })
   })
 
-  it('starts multipart uploads with key query and metadata headers', async () => {
+  it('starts multipart uploads with key query and attributes headers', async () => {
     const requests: CapturedRequest[] = []
     const storage = createStorage(requests, {
       bucket: 'videos',
@@ -232,7 +232,7 @@ describe('JupiterStorage', () => {
       bucketName: 'videos',
       contentType: 'video/quicktime',
       key: 'raw/a.mov',
-      metadata: {
+      attributes: {
         source: 'camera'
       }
     })

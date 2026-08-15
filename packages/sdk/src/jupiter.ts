@@ -18,8 +18,6 @@ export class Jupiter {
 
   protected jauthUrl: URL
   protected jstorageUrl: URL
-  protected jdbrestUrl: URL
-  protected jdbrestUrlString: string
 
   protected storageKey: string
   protected fetch?: Fetch
@@ -36,8 +34,6 @@ export class Jupiter {
     this.baseUrlU = new URL(this.baseUrl)
     this.jauthUrl = new URL('auth', this.baseUrl)
     this.jstorageUrl = new URL('storage', this.baseUrl)
-    this.jdbrestUrl = new URL('db/rest', this.baseUrl)
-    this.jdbrestUrlString = this.jdbrestUrl.toString()
 
     this.projectId = projectId
     const defaults = getDefaults(this.baseUrlU, this.projectId)
@@ -79,8 +75,6 @@ export class Jupiter {
       Promise.resolve(this.accessToken()).catch((e) => console.warn('', e))
     }
 
-    // this.db = this._initRestClient(this.jdbrestUrlString, this.headers, this.fetch)
-
     this.storage = this.createStorage()
 
     if (!settings.accessToken) {
@@ -97,19 +91,6 @@ export class Jupiter {
 
     return data.session?.access_token ?? null
   }
-
-  /*private _initRestClient(url: string, headers: Record<string, string>, fetch: Fetch) {
-    const client = new NeonPostgrestClient<Database, SchemaName>({
-      dataApiUrl: url,
-      options: {
-        global: {
-          fetch: fetch,
-          headers: headers
-        }
-      }
-    })
-    return client
-  }*/
 
   private _initAuthClient(
     {

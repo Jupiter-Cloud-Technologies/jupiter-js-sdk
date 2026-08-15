@@ -11,9 +11,6 @@
       "path": "./packages/storage"
     },
     {
-      "path": "./packages/postgrest"
-    },
-    {
       "path": "./packages/sdk"
     }
   ]

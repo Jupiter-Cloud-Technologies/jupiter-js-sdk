@@ -49,8 +49,7 @@
   "dependencies": {
     "@jupiter-cloud/auth": "workspace:*",
     "@jupiter-cloud/core": "workspace:*",
-    "@jupiter-cloud/storage": "workspace:*",
-    "@jupiter-cloud/postgrest": "workspace:*"
+    "@jupiter-cloud/storage": "workspace:*"
   },
   "devDependencies": {
     "tsd": "^0.31.2"

@@ -441,8 +441,8 @@ export type UploadObjectOptions = {
   /** MIME type for the uploaded object. Defaults to `application/octet-stream`. */
   contentType?: string
 
-  /** User-defined object metadata encoded into the `X-Jupiter-Object-Metadata` header. */
-  metadata?: StorageAttributes
+  /** User-defined object attributes encoded into the `X-Jupiter-Object-Metadata` header. */
+  attributes?: StorageAttributes
 
   /** Abort signal for cancelling the upload request. */
   signal?: AbortSignal
@@ -533,7 +533,7 @@ export type CopyObjectRequest = {
   /** Optional Cache-Control override for the copied object. */
   cacheControl?: string
 
-  /** Optional metadata override for the copied object. */
+  /** Optional attributes override for the copied object. */
   objectMetadata?: StorageAttributes
 }
 
@@ -541,7 +541,7 @@ export type CopyObjectRequest = {
  * Options for copying an object.
  *
  * The destination bucket and key are usually expressed by the method path, while these
- * options identify the source object and optional metadata overrides.
+ * options identify the source object and optional attribute overrides.
  */
 export type CopyObjectOptions = {
   /** Source bucket name. Use the destination bucket name for same-bucket copies. */
@@ -556,8 +556,8 @@ export type CopyObjectOptions = {
   /** Optional Cache-Control override for the copied object. */
   cacheControl?: string
 
-  /** Optional metadata override for the copied object. */
-  metadata?: StorageAttributes
+  /** Optional attributes override for the copied object. */
+  attributes?: StorageAttributes
 
   /** Abort signal for cancelling the copy request. */
   signal?: AbortSignal
@@ -754,8 +754,8 @@ export type DownloadObjectHeaders = {
   /** Cache-Control value stored with the object. */
   cacheControl?: string
 
-  /** User-defined object metadata decoded from the response header. */
-  metadata?: StorageAttributes
+  /** User-defined object attributes decoded from the response header. */
+  attributes?: StorageAttributes
 
   /** Timestamp when the object was created. */
   createdAt?: IsoTimestamp
@@ -872,8 +872,8 @@ export type StartMultipartUploadOptions = {
   /** Cache-Control value to store with the completed object. */
   cacheControl?: string
 
-  /** User-defined object metadata encoded into the `X-Jupiter-Object-Metadata` header. */
-  metadata?: StorageAttributes
+  /** User-defined object attributes encoded into the `X-Jupiter-Object-Metadata` header. */
+  attributes?: StorageAttributes
 
   /** Abort signal for cancelling the start request. */
   signal?: AbortSignal

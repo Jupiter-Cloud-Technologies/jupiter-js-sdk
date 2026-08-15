@@ -212,7 +212,7 @@ export class JupiterStorage {
    * Upload object bytes directly.
    */
   uploadObject(params: UploadObjectParams): StorageResult<UploadObjectResponse> {
-    const { bucketName, key, body, cacheControl, contentLength, contentType, metadata, signal } =
+    const { bucketName, key, body, cacheControl, contentLength, contentType, attributes, signal } =
       params
 
     assertSupportedUploadBody(body)
@@ -231,7 +231,7 @@ export class JupiterStorage {
           'cache-control': cacheControl,
           'content-length': String(inferredContentLength),
           'content-type': contentType,
-          'X-Jupiter-Object-Metadata': metadata ? encodeMetadataHeader(metadata) : undefined
+          'X-Jupiter-Object-Metadata': attributes ? encodeMetadataHeader(attributes) : undefined
         },
         method: 'PUT'
       },
@@ -403,7 +403,7 @@ export class JupiterStorage {
       contentType,
       destinationBucketName,
       destinationKey,
-      metadata,
+      attributes,
       originBucket,
       originKey,
       signal
@@ -414,7 +414,7 @@ export class JupiterStorage {
         body: {
           cacheControl,
           contentType,
-          objectMetadata: metadata,
+          objectMetadata: attributes,
           originBucket,
           originKey
         },
@@ -454,14 +454,14 @@ export class JupiterStorage {
    * Start a multipart upload.
    */
   startMultipartUpload(params: StartMultipartUploadParams): StorageResult<MultipartStartResponse> {
-    const { bucketName, cacheControl, contentType, key, metadata, signal } = params
+    const { bucketName, cacheControl, contentType, key, attributes, signal } = params
 
     const requestOptions = withSignal(
       {
         headers: {
           'cache-control': cacheControl,
           'content-type': contentType,
-          'X-Jupiter-Object-Metadata': metadata ? encodeMetadataHeader(metadata) : undefined
+          'X-Jupiter-Object-Metadata': attributes ? encodeMetadataHeader(attributes) : undefined
         },
         method: 'POST',
         query: {
@@ -756,7 +756,7 @@ function parseDownloadObjectHeaders(headers: Headers): DownloadObjectResponse['h
     const decodedMetadata = decodeMetadataHeader(metadata)
 
     if (decodedMetadata !== undefined) {
-      parsedHeaders.metadata = decodedMetadata
+      parsedHeaders.attributes = decodedMetadata
     }
   }
 
@@ -779,7 +779,7 @@ function encodeMetadataHeader(metadata: object): string {
 
 function decodeMetadataHeader(
   metadata: string
-): DownloadObjectResponse['headers']['metadata'] | undefined {
+): DownloadObjectResponse['headers']['attributes'] | undefined {
   const decoded = decodeBase64(metadata)
   const parsed = JSON.parse(decoded) as unknown
 
@@ -787,7 +787,7 @@ function decodeMetadataHeader(
     return undefined
   }
 
-  return parsed as DownloadObjectResponse['headers']['metadata']
+  return parsed as DownloadObjectResponse['headers']['attributes']
 }
 
 function encodeBase64(value: string): string {
