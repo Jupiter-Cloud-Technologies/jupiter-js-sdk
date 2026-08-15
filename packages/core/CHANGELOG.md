@@ -1,5 +1,11 @@
 # @jupiter-cloud/core
 
+## 4.0.0
+
+### Major Changes
+
+- d341b64: Rename metadata to attributes in Storage
+
 ## 3.2.0
 
 ### Minor Changes
