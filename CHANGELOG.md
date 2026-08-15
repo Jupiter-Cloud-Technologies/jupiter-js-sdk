@@ -1,5 +1,48 @@
 # jupiter-js
 
+## 4.1.0
+
+### @jupiter-cloud/auth
+
+#### Minor Changes
+
+- e65db5d: make the admin key in the sdk optional
+
+#### Patch Changes
+
+- Updated dependencies [e65db5d]
+  - @jupiter-cloud/core@4.1.0
+
+### @jupiter-cloud/core
+
+#### Minor Changes
+
+- e65db5d: make the admin key in the sdk optional
+
+### @jupiter-cloud/sdk
+
+#### Minor Changes
+
+- e65db5d: make the admin key in the sdk optional
+
+#### Patch Changes
+
+- Updated dependencies [e65db5d]
+  - @jupiter-cloud/auth@4.1.0
+  - @jupiter-cloud/core@4.1.0
+  - @jupiter-cloud/storage@4.1.0
+
+### @jupiter-cloud/storage
+
+#### Minor Changes
+
+- e65db5d: make the admin key in the sdk optional
+
+#### Patch Changes
+
+- Updated dependencies [e65db5d]
+  - @jupiter-cloud/core@4.1.0
+
 ## 4.0.0
 
 ### @jupiter-cloud/auth
