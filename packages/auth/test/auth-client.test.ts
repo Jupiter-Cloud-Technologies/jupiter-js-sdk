@@ -55,6 +55,52 @@ describe('JupiterAuth', () => {
     })
   })
 
+  it('signs up with phone and password using phone credentials', async () => {
+    const requests: CapturedRequest[] = []
+    const auth = createAuth(requests, {
+      access_token: 'access',
+      expires_at: 1,
+      expires_in: 3600,
+      refresh_token: 'refresh',
+      token_type: 'bearer'
+    })
+
+    await auth.signUpWithPhoneAndPassword({
+      phone: '+15555550100',
+      password: 'password1'
+    })
+
+    expect(requests[0]?.url).toBe('https://auth.example.test/signup')
+    expect(requests[0]?.method).toBe('POST')
+    expectJsonBody(requests[0]?.body, {
+      attributes: {},
+      password: 'password1',
+      phone: '+15555550100'
+    })
+  })
+
+  it('maps phone password sign-in to token password grant', async () => {
+    const requests: CapturedRequest[] = []
+    const auth = createAuth(requests, {
+      access_token: 'access',
+      expires_at: 1,
+      expires_in: 3600,
+      refresh_token: 'refresh',
+      token_type: 'bearer'
+    })
+
+    await auth.signInWithPhoneAndPassword({
+      phone: '+15555550100',
+      password: 'password1'
+    })
+
+    expect(requests[0]?.url).toBe('https://auth.example.test/token?grant_type=password')
+    expectJsonBody(requests[0]?.body, {
+      password: 'password1',
+      phone: '+15555550100'
+    })
+  })
+
   it('builds OAuth authorize URLs', () => {
     const auth = new JupiterAuth('https://auth.example.test', {
       projectId: 'project-1'
